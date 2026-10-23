@@ -108,9 +108,9 @@ function restoreState(s){cols=s.cols;rows=s.rows;stitch=s.stitch;orientation=s.o
 function updateHistoryButtons(){$('undo').disabled=!undoStack.length;$('redo').disabled=!redoStack.length}
 function undo(){if(!undoStack.length)return;redoStack.push(snapshot());restoreState(undoStack.pop())}
 function redo(){if(!redoStack.length)return;undoStack.push(snapshot());restoreState(redoStack.pop())}
-const canvas=document.getElementById('board'),ctx=canvas.getContext('2d');const $=id=>document.getElementById(id);const viewCols=()=>orientation==='vertical'?rows:cols;const viewRows=()=>orientation==='vertical'?cols:rows;
-function dataCoord(vr,vc){return orientation==='vertical'?{r:rows-1-vc,c:vr}:{r:vr,c:vc}}
-function viewCoord(r,c){return orientation==='vertical'?{vr:c,vc:rows-1-r}:{vr:r,vc:c}}
+const canvas=document.getElementById('board'),ctx=canvas.getContext('2d');const $=id=>document.getElementById(id);const viewCols=()=>cols;const viewRows=()=>rows;
+function dataCoord(vr,vc){return {r:vr,c:vc}}
+function viewCoord(r,c){return {vr:r,vc:c}}
 function makePalette(filter=''){const p=$('palette');p.innerHTML='';colors.forEach((c,i)=>{if(!c[2]&&(!window.__onlyMine||i===0||i>=(window.__baseLen||1e9))&&(i===0||c[0].toLowerCase().includes(filter.toLowerCase()))){let b=document.createElement('button');b.className='swatch'+(i===selected?' active':'');b.style.background=c[1]||'repeating-conic-gradient(#eee 0% 25%,white 0% 50%) 50%/10px 10px';b.title=c[0];b.setAttribute('aria-label',c[0]);b.onclick=()=>{selected=i;tool=i===0?'erase':'paint';updatePalette();$('colorname').textContent=c[0];setToolButtons()};p.appendChild(b)}})}function updatePalette(){[...$('palette').children].forEach(b=>b.classList.toggle('active',b.title===colors[selected][0]))}function setToolButtons(){['paint','erase','selectTool','fill'].forEach(id=>$(id).classList.toggle('primary',id===({paint:'paint',erase:'erase',select:'selectTool',fill:'fill'}[tool])));$('canvasHelp').textContent=tool==='select'?'Trascina per selezionare un rettangolo; copia/taglia, poi incolla e clicca per posizionare.':tool==='paste'?'Anteprima del motivo: sposta il mouse e clicca per incollare.':tool==='image'?'Clicca sul punto in cui vuoi inserire l’immagine convertita in perline.':tool==='fill'?'Usa il secchiello su una perlina: verrà riempita solo la zona contigua dello stesso colore, fino ai bordi.':'Disegna con il mouse o trascina per colorare più perline.'}
 function resetData(){remember();data=Array.from({length:rows},()=>Array(cols).fill(0));selection=null;draw()}
 function draw(){const vc=viewCols(),vr=viewRows(),extra=isStag()?cell/2:0;canvas.width=vc*cell+extra+1+GM;canvas.height=Math.round(vr*cell*KY())+1+GM;ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.translate(GM,GM);ctx.scale(1,KY());
@@ -125,7 +125,7 @@ function outlinePoly(rs){ctx.beginPath();rs.forEach(q=>{ctx.lineTo(q.r,q.t);ctx.
 function pasteX(info,i,j,x,y){let xx=x+j;if(!info||!isStag())return xx;const ps=info.rowPar[i],pd=(y+i)%2,t=(ps^pd);
 if(info.mirrorH){if(t===0&&pd===1)xx-=1}else{if(t===1&&pd===0)xx+=1}return xx}
 function drawPreview(matrix,x,y,info){ctx.save();ctx.globalAlpha=.82;for(let rr=0;rr<matrix.length;rr++)for(let cc=0;cc<(matrix[rr]||[]).length;cc++){let yy=y+rr,xx=pasteX(info,rr,cc,x,y);if(yy<0||xx<0||yy>=viewRows()||xx>=viewCols())continue;let idx=matrix[rr][cc];if(idx===null||idx===undefined)continue;const off=isStag()&&yy%2?cell/2:0;const px=xx*cell+off+cell/2,py=yy*cell+cell/2;bPath(ctx,px,py,cell,cell);ctx.fillStyle=colors[idx]?.[1]||'#fff';ctx.fill();if(showGrid){ctx.strokeStyle='#00000030';ctx.lineWidth=.7;ctx.stroke()}if(idx!==0){bShine(ctx,px,py,cell);ctx.fillStyle='#ffffff55';ctx.fill()}}ctx.setLineDash([5,3]);ctx.globalAlpha=1;ctx.strokeStyle='#7952a5';ctx.lineWidth=2;const w0=(matrix[0]||[]).length;outlinePoly(matrix.map((_,i)=>{const o=isStag()&&(y+i)%2?cell/2:0;return {l:pasteX(info,i,0,x,y)*cell+o,r:(pasteX(info,i,Math.max(0,w0-1),x,y)+1)*cell+o,t:(y+i)*cell}}));ctx.stroke();ctx.restore()}
-function viewAt(e){const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left)*(canvas.width/rect.width)-GM,y=(e.clientY-rect.top)*(canvas.height/rect.height)-GM;let vr=Math.floor(y/(cell*KY()));let offset=isStag()&&vr%2?cell/2:0;let vc=Math.floor((x-offset)/cell);return {vr,vc}}
+function viewAt(e){const rect=canvas.getBoundingClientRect(),RX=(e.clientX-rect.left)*(canvas.width/rect.width),RY=(e.clientY-rect.top)*(canvas.height/rect.height),x=(orientation==='vertical'?RY:RX)-GM,y=(orientation==='vertical'?canvas.width-RX:RY)-GM;let vr=Math.floor(y/(cell*KY()));let offset=isStag()&&vr%2?cell/2:0;let vc=Math.floor((x-offset)/cell);return {vr,vc}}
 function paintAt(e){let {vr,vc}=viewAt(e);if(vr<0||vc<0||vr>=viewRows()||vc>=viewCols())return;let {r,c}=dataCoord(vr,vc);const v=tool==='erase'?0:selected,n=viewCols(),pts=[[vr,vc]];if($('symV')&&$('symV').checked){const v2=viewRows()-1-vr,sx=(isStag()&&vr%2===1&&v2%2===0)?1:0;pts.push([v2,vc+sx])}if($('symH')&&$('symH').checked)pts.slice().forEach(q=>pts.push([q[0],n-1-q[1]]));pts.forEach(q=>{if(q[0]<0||q[1]<0||q[0]>=viewRows()||q[1]>=n)return;const d=dataCoord(q[0],q[1]);data[d.r][d.c]=v});draw()}
 function bucketFill(vr,vc){if(vr<0||vc<0||vr>=viewRows()||vc>=viewCols())return;const start=dataCoord(vr,vc),target=data[start.r][start.c],replacement=selected;if(target===replacement)return;remember();const q=[[vr,vc]],seen=new Set();while(q.length){const [y,x]=q.pop(),key=y+','+x;if(seen.has(key)||y<0||x<0||y>=viewRows()||x>=viewCols())continue;seen.add(key);const pos=dataCoord(y,x);if(data[pos.r][pos.c]!==target)continue;data[pos.r][pos.c]=replacement;q.push([y-1,x],[y+1,x],[y,x-1],[y,x+1])}draw()}
 function cl(p){return {vr:Math.max(0,Math.min(viewRows()-1,p.vr)),vc:Math.max(0,Math.min(viewCols()-1,p.vc))}}
@@ -246,7 +246,7 @@ window.addEventListener('pointerup',()=>{if(!shapeDrag)return;const cells=shapeC
 function mk(title,html,fn){const d=document.createElement('details');d.className='group';d.innerHTML='<summary>'+title+'</summary>'+html;panel.append(d);d.addEventListener('toggle',()=>{if(d.open)fn()});return d}
 const dI=mk('Istruzioni riga per riga','<div class="btnrow" style="align-items:center"><button class="btn" id="rowPrev">‹</button><input type="number" id="curRow" min="1" value="1" style="width:70px"><button class="btn" id="rowNext">›</button><label style="display:inline-flex;gap:4px;align-items:center;margin:0"><input type="checkbox" id="hlRow" style="width:auto"> evidenzia</label></div><textarea id="instr" readonly rows="9" style="width:100%;margin-top:8px;font:12px monospace"></textarea><button class="btn" id="copyInstr" style="margin-top:6px">Copia testo</button>',()=>updateInstr());
 const dM=mk('Anteprima realistica','<canvas id="mini" style="max-width:100%;border-radius:8px;background:#2b2233"></canvas><div class="small">Così apparirà il lavoro, senza griglia.</div>',()=>updateMini());
-function instrText(){if(stitch==='peyote')return peyoteInstr();if(stitch==='brick'&&window.__guideApi){const A=window.__guideApi,o=['BRICK STITCH: si lavora per righe, partendo dalla base a scala (riga 1). Nella guida interattiva il contorno blu indica l’aumento.',''];for(let s=1;s<=viewRows();s++)o.push(A.descOf(s).replace('Riga '+s+' · ','Riga '+s+': ')+' → '+A.runsOf(s).map(([v,n])=>n+'× '+(v===0?'vuota':colors[v][0])).join(', '));return o.join('\n')}const o=[];for(let r=0;r<viewRows();r++){const runs=[];let prev=null,n=0;const flush=()=>{if(prev!==null)runs.push(n+'× '+(prev===0?'vuote':colors[prev][0]))};for(let c=0;c<viewCols();c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v===prev)n++;else{flush();prev=v;n=1}}flush();o.push('Riga '+(r+1)+': '+runs.join(', '))}return o.join('\n')}
+function instrText(){const t=instrText0();return orientation==='vertical'?'(Schema ruotato: alto, basso, destra e sinistra nel testo si riferiscono allo schema in orizzontale, con la lunghezza da sinistra a destra.)\n'+t:t}function instrText0(){if(stitch==='peyote')return peyoteInstr();if(stitch==='brick'&&window.__guideApi){const A=window.__guideApi,o=['BRICK STITCH: si lavora per righe, partendo dalla base a scala (riga 1). Nella guida interattiva il contorno blu indica l’aumento.',''];for(let s=1;s<=viewRows();s++)o.push(A.descOf(s).replace('Riga '+s+' · ','Riga '+s+': ')+' → '+A.runsOf(s).map(([v,n])=>n+'× '+(v===0?'vuota':colors[v][0])).join(', '));return o.join('\n')}const o=[];for(let r=0;r<viewRows();r++){const runs=[];let prev=null,n=0;const flush=()=>{if(prev!==null)runs.push(n+'× '+(prev===0?'vuote':colors[prev][0]))};for(let c=0;c<viewCols();c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v===prev)n++;else{flush();prev=v;n=1}}flush();o.push('Riga '+(r+1)+': '+runs.join(', '))}return o.join('\n')}
 function updateInstr(){if(dI.open)$('instr').value=instrText()}
 function updateMini(){if(!dM.open)return;const m=$('mini'),vc=viewCols(),vr=viewRows(),pc=Math.max(2,Math.min(8,Math.floor(300/(vc+.5)))),x=m.getContext('2d'),pe=isStag();m.width=Math.round((vc+(pe?.5:0))*pc);const ch=pc/pixAspect();m.height=Math.round(vr*ch);x.fillStyle='#2b2233';x.fillRect(0,0,m.width,m.height);for(let r=0;r<vr;r++)for(let c=0;c<vc;c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(!v)continue;x.fillStyle=colors[v][1];bPath(x,(c+(pe&&r%2?.5:0))*pc+pc/2,r*ch+ch/2,pc,ch);x.fill()}}
 const goRow=d=>{const v=Math.max(1,Math.min(stepMax(),(+$('curRow').value||1)+d));$('curRow').value=v;$('hlRow').checked=true;draw()};
@@ -467,20 +467,20 @@ function brickIncCell(r){return [r,r%2===1?viewCols()-1:0]}
 function brickDesc(s){const r=s-1,C=viewCols();if(r===0)return 'Riga 1 · base a scala (ladder stitch): '+C+' perline, ognuna agganciata alla precedente';const rtl=brickRtl(r),side=r%2===1?'destra':'sinistra',first=brickIncFirst(r);return 'Riga '+s+' · '+(rtl?'da destra a sinistra':'da sinistra a destra')+' · '+(first?'si parte dall’aumento ('+side+'), agganciato al filo del bordo; le altre perline vanno sui ponti di filo':'le perline vanno sui ponti di filo; l’ultima, a '+side+', è l’aumento e si aggancia al filo del bordo')}
 const turnAfter=s=>stitch==='peyote'&&viewRows()%2===1&&s>=2&&s%2===0;
 const TURN_HELP='Variante con anello di filo: dopo l’ultima perlina del passaggio fai passare l’ago sotto il filo più vicino sul bordo, poi rientra nell’ultima perlina per uscire dal lato giusto e iniziare il passaggio successivo. Esistono altre varianti (ad esempio il giro a otto, o il filo portato per tutta la larghezza): se ne conosci una, usa quella. Alcuni tutorial usano un avvio diverso per il primo giro.';
-function setNote(){const n=$('gNote');let t='';if(turnAfter(gStep))t='<b>Giro di volta</b> alla fine di questo passaggio, sul bordo in alto (peyote dispari: serve ogni due passaggi). <details><summary>Come si fa</summary>'+TURN_HELP+'</details>';else if(stitch==='brick'&&gStep>1)t='Il contorno blu tratteggiato indica la perlina di <b>aumento</b>.';n.style.display=t?'block':'none';n.innerHTML=t}
+function setNote(){const n=$('gNote');let t='';if(turnAfter(gStep))t='<b>Giro di volta</b> alla fine di questo passaggio, sul bordo in alto (peyote dispari: serve ogni due passaggi). <details><summary>Come si fa</summary>'+TURN_HELP+'</details>';else if(stitch==='brick'&&gStep>1)t='Il contorno blu tratteggiato indica la perlina di <b>aumento</b>.';n.style.display=t?'block':'none';n.innerHTML=(window.__rotText||(x=>x))(t)}
 function runsOf(s){const out=[];let prev=null,n=0;cellsOf(s).forEach(([r,c])=>{const d=dataCoord(r,c),v=data[d.r][d.c];if(v===prev)n++;else{if(prev!==null)out.push([prev,n]);prev=v;n=1}});if(prev!==null)out.push([prev,n]);return out}
 function descOf(s){if(stitch==='peyote'){const st=peyoteStep(s);return 'Colonna '+(st.col+1)+' · '+st.dir+(s>1?' · una perlina sì e una no':'')+(turnAfter(s)?' · poi giro di volta in alto':'')}if(stitch==='brick')return brickDesc(s);return 'Riga '+s+' · da sinistra a destra'}
 function sig(){let h=5381;const t=JSON.stringify([cols,rows,stitch,orientation,data]);for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)}
 function layout(){const h=window.visualViewport?visualViewport.height:innerHeight,bh=bar.offsetHeight;document.body.style.paddingBottom=bh+'px';box.style.maxHeight=Math.max(180,h-bh-16)+'px'}
 function focusStep(smooth){const rect=canvas.getBoundingClientRect(),k=rect.width/canvas.width,st=isStag(),cl=cellsOf(gStep),[r0,c0]=cl[0],ky=KY();
- const px=(r,c)=>[(GM+c*cell+(st&&r%2?cell/2:0)+cell/2)*k,(GM+(r*cell+cell/2)*ky)*k];
+ const px0=(r,c)=>[(GM+c*cell+(st&&r%2?cell/2:0)+cell/2)*k,(GM+(r*cell+cell/2)*ky)*k];const px=(r,c)=>{const [x,y]=px0(r,c);return orientation==='vertical'?[canvas.width*k-y,x]:[x,y]};
  let L=box.scrollLeft,T=box.scrollTop;
  if(stitch==='peyote'){const [x,y]=px(r0,c0);L=x-box.clientWidth/2;if(canvas.height*k>box.clientHeight)T=y-box.clientHeight/2}
- else{const [,y]=px(r0,0);T=y-box.clientHeight/2;L=0}
+ else{const [x,y]=px(r0,0);if(orientation==='vertical'){L=x-box.clientWidth/2;T=0}else{T=y-box.clientHeight/2;L=0}}
  box.scrollTo({left:Math.max(0,L),top:Math.max(0,T),behavior:smooth?'smooth':'auto'})}
 function render(smooth){const T=total();gStep=Math.max(1,Math.min(T,gStep));
  $('gCount').textContent='Passo '+gStep+' di '+T;$('gProgI').style.width=(gStep/T*100)+'%';
- $('gDesc').textContent=descOf(gStep)+' · '+cellsOf(gStep).length+' perline';setNote();
+ $('gDesc').textContent=(window.__rotText||(x=>x))(descOf(gStep)+' · '+cellsOf(gStep).length+' perline');setNote();
  const ch=$('gChips');ch.innerHTML='';runsOf(gStep).forEach(([v,n],i)=>{const b=document.createElement('button');b.className='gchip'+(done.has(i)?' ok':'');b.title='Tocca per segnare come infilato';
   b.innerHTML='<i style="background:'+(v===0?'repeating-conic-gradient(#ddd 0% 25%,#fff 0% 50%) 50%/8px 8px':colors[v][1])+'"></i>'+(window.__sym&&window.__sym.on()&&v>0?'<b>'+window.__sym.of(v)+'</b>':'')+'<b>'+n+'×</b> '+(v===0?'vuota':colors[v][0]);
   b.onclick=()=>{done.has(i)?done.delete(i):done.add(i);b.classList.toggle('ok')};ch.append(b)});
@@ -649,7 +649,7 @@ const symOf=i=>i>0?SYMS[(i-1)%SYMS.length]:'';
 const symInk=i=>{const h=colors[i]&&colors[i][1];if(!h)return '#000';const [r,g,b]=rgb(h);return (.299*r+.587*g+.114*b)>150?'#222':'#fff'};
 window.__sym={of:symOf,ink:symInk,on:()=>symOn};
 function drawSyms(){if(!symOn||cell<9)return;const R=viewRows(),C=viewCols(),st=isStag(),ky=KY();ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='700 '+Math.round(cell*.55)+'px system-ui,-apple-system,sans-serif';
- for(let r=0;r<R;r++)for(let c=0;c<C;c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v<=0)continue;ctx.save();ctx.translate(c*cell+(st&&r%2?cell/2:0)+cell/2,r*cell+cell/2);ctx.scale(1,1/ky);ctx.fillStyle=symInk(v);ctx.fillText(symOf(v),0,1);ctx.restore()}ctx.restore()}
+ for(let r=0;r<R;r++)for(let c=0;c<C;c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v<=0)continue;ctx.save();ctx.translate(c*cell+(st&&r%2?cell/2:0)+cell/2,r*cell+cell/2);ctx.scale(1,1/ky);if(orientation==='vertical')ctx.rotate(-Math.PI/2);ctx.fillStyle=symInk(v);ctx.fillText(symOf(v),0,1);ctx.restore()}ctx.restore()}
 window.__drawSyms=drawSyms;
 const symBtn=document.createElement('button');symBtn.className='btn tbb';symBtn.id='symBtn';symBtn.textContent='Aa';symBtn.title='Mostra un simbolo su ogni perlina (utile in stampa)';
 function toggleSym(){symOn=!symOn;try{localStorage.setItem('miyukiSym',symOn?'1':'0')}catch(e){}symBtn.classList.toggle('primary',symOn);$('gSym').classList.toggle('pri',symOn);draw();window.__guideRefresh&&window.__guideRefresh()}
@@ -657,7 +657,7 @@ symBtn.onclick=toggleSym;$('gSym').onclick=toggleSym;symBtn.classList.toggle('pr
 
 /* ---------- ADATTA ALLA FINESTRA ---------- */
 let autoFit;try{const v=localStorage.getItem('miyukiAutoFit');autoFit=v===null?innerWidth<=600:v==='1'}catch(e){autoFit=innerWidth<=600}
-function fitCell(){if(box.clientWidth<60)return cell;const vc=viewCols(),vr=viewRows(),st=isStag(),cs0=getComputedStyle(box),aw=box.clientWidth-parseFloat(cs0.paddingLeft||0)-parseFloat(cs0.paddingRight||0)-GM-6,mh=parseFloat(getComputedStyle(box).maxHeight),ah=(isFinite(mh)?mh:innerHeight*.6)-parseFloat(cs0.paddingTop||0)-parseFloat(cs0.paddingBottom||0)-GM-6;return Math.max(4,Math.min(36,Math.floor(Math.min(aw/(vc+(st?.5:0)),ah/(vr*KY())))))}
+function fitCell(){if(box.clientWidth<60)return cell;const vc=viewCols(),vr=viewRows(),st=isStag(),cs0=getComputedStyle(box),aw=box.clientWidth-parseFloat(cs0.paddingLeft||0)-parseFloat(cs0.paddingRight||0)-GM-6,mh=parseFloat(getComputedStyle(box).maxHeight),ah=(isFinite(mh)?mh:innerHeight*.6)-parseFloat(cs0.paddingTop||0)-parseFloat(cs0.paddingBottom||0)-GM-6;return Math.max(4,Math.min(36,Math.floor(orientation==='vertical'?Math.min(aw/(vr*KY()),ah/(vc+(st?.5:0))):Math.min(aw/(vc+(st?.5:0)),ah/(vr*KY())))))}
 const fitBtn=document.createElement('button');fitBtn.className='btn tbb';fitBtn.id='fitBtn';fitBtn.textContent='⤢';fitBtn.title='Adatta lo schema alla finestra';fitBtn.onclick=()=>{cell=fitCell();draw();box.scrollTo(0,0)};
 const lyrBtn=document.createElement('button');lyrBtn.className='btn tbb';lyrBtn.id='lyrBtn';lyrBtn.title='Livelli';lyrBtn.onclick=()=>{panelEl.classList.add('open');const bk=$('drawerBack');if(bk)bk.classList.add('show');const fab=$('drawerBtn');if(fab)fab.textContent='✕ Chiudi';dLay.open=true;dLay.scrollIntoView({block:'nearest'})};
 $('gridtoggle').after(lyrBtn,symBtn,fitBtn);renderLayerList();
@@ -670,10 +670,10 @@ addEventListener('resize',()=>{if(autoFit&&!window.__guide)draw()});
 const dM=mkDetails('Misure e lunghezza','<div id="mSummary" class="small" style="line-height:1.5"></div><div class="twocol" style="margin-top:8px"><div><label for="mWrist">Polso (mm)</label><input id="mWrist" type="number" min="50" max="400" value="160"></div><div><label for="mEase">Margine (mm)</label><input id="mEase" type="number" min="-50" max="100" value="15"></div></div><div class="twocol"><div><label for="mClasp">Chiusura (mm)</label><input id="mClasp" type="number" min="0" max="100" value="0"></div><div></div></div><div id="mSuggest" class="small" style="margin:8px 0;line-height:1.5"></div><button class="btn primary" id="mApply">Imposta le colonne consigliate</button><div class="small" style="margin-top:8px">Misure basate sulle dimensioni ufficiali delle Delica (per le tonde la lunghezza è una stima). Sul lavoro reale filo e tensione cambiano il risultato di qualche percento: controlla con un campione.</div>');
 panelEl.insertBefore(dM,dLay.nextSibling);
 const dimsMM=()=>{let [D,L]=beadDims();if($('beadSwap')&&$('beadSwap').checked)[D,L]=[L,D];return {cw:L,ch:D}};
-function suggestCols(){const {cw,ch}=dimsMM(),st=isStag(),vert=orientation==='vertical',T=(+$('mWrist').value||0)+(+$('mEase').value||0)-(+$('mClasp').value||0);const N=vert?Math.round(T/ch):Math.round(T/cw-(st?.5:0));return {T,N:Math.max(5,Math.min(160,N)),raw:N}}
-function updateMeasures(){if(!dM.open)return;const {cw,ch}=dimsMM(),vc=viewCols(),vr=viewRows(),st=isStag(),vert=orientation==='vertical',wMM=(vc+(st?.5:0))*cw,hMM=vr*ch,len=vert?hMM:wMM,wid=vert?wMM:hMM;
+function suggestCols(){const {cw,ch}=dimsMM(),st=isStag(),T=(+$('mWrist').value||0)+(+$('mEase').value||0)-(+$('mClasp').value||0);const N=Math.round(T/cw-(st?.5:0));return {T,N:Math.max(5,Math.min(160,N)),raw:N}}
+function updateMeasures(){if(!dM.open)return;const {cw,ch}=dimsMM(),vc=viewCols(),vr=viewRows(),st=isStag(),vert=orientation==='vertical',wMM=(vc+(st?.5:0))*cw,hMM=vr*ch,len=wMM,wid=hMM;
  $('mSummary').innerHTML='<b>Lo schema misura circa '+len.toFixed(1)+' × '+wid.toFixed(1)+' mm</b> ('+(len/10).toFixed(1)+' × '+(wid/10).toFixed(1)+' cm, lunghezza × larghezza).<br>'+cols+' colonne × '+rows+' righe = '+(cols*rows)+' perline. Ogni cella: '+cw+' × '+ch+' mm.';
- const sg=suggestCols(),cur=vert?hMM:wMM;const newLen=vert?sg.N*ch:(sg.N+(st?.5:0))*cw;
+ const sg=suggestCols(),cur=wMM;const newLen=(sg.N+(st?.5:0))*cw;
  $('mSuggest').innerHTML='Lavorazione richiesta: <b>'+sg.T.toFixed(0)+' mm</b> (polso + margine − chiusura). Colonne consigliate: <b>'+sg.N+'</b> (≈ '+newLen.toFixed(1)+' mm; ora '+cols+' colonne, ≈ '+cur.toFixed(1)+' mm).'+(sg.raw!==sg.N?' Il valore è stato portato nei limiti della griglia (5–160).':'')}
 ['mWrist','mEase','mClasp'].forEach(id=>$(id).addEventListener('input',updateMeasures));dM.addEventListener('toggle',updateMeasures);
 $('mApply').onclick=()=>{const sg=suggestCols();$('sizeMode').value='beads';if($('sizeMode').onchange)$('sizeMode').onchange();$('cols').value=sg.N;$('resize').click();toast('Colonne impostate a '+sg.N+' (annullabile).')};
@@ -753,6 +753,30 @@ function health(){let n=0;for(let r=0;r<data.length&&n<3;r++)for(let c=0;c<data[
 $('orientation').addEventListener('change',()=>{box.scrollTo(0,0);setTimeout(health,120)});
 $('resize').addEventListener('click',()=>{box.scrollTo(0,0);setTimeout(health,150)});
 addEventListener('error',e=>{if(!ban.classList.contains('show'))showBan('Si è verificato un errore.',e.message)});
+draw();
+})();
+
+/* ===== v18: il verticale è lo schema ruotato di 90° ===== */
+(function(){
+const mobile=()=>matchMedia('(max-width:900px)').matches;
+const MAP={'dall’alto verso il basso':'da destra verso sinistra','dal basso verso l’alto':'da sinistra verso destra','da sinistra a destra':'dall’alto verso il basso','da destra a sinistra':'dal basso verso l’alto','(sinistra)':'(in alto)','(destra)':'(in basso)','in alto':'a destra','a destra':'in basso','a sinistra':'in alto','↓':'←','↑':'→'};
+const RX=new RegExp(Object.keys(MAP).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[()]/g,'\\$&')).join('|'),'g');
+window.__rotText=t=>orientation==='vertical'?String(t).replace(RX,m=>MAP[m]):t;
+function rotateView(){const w=canvas.width,h=canvas.height;if(!(w>0&&h>0))return;const t=document.createElement('canvas');t.width=w;t.height=h;t.getContext('2d').drawImage(canvas,0,0);canvas.width=h;canvas.height=w;const c=canvas.getContext('2d');c.translate(h,0);c.rotate(Math.PI/2);c.drawImage(t,0,0)}
+function labels(){const v=orientation==='vertical';
+ const set=(id,a,t)=>{const e=$(id);if(e){e.textContent=a;e.title=t}};
+ set('mirrorH',v?'↕ Specchio':'↔ Specchio',v?'Copia a specchio verticale':'Copia a specchio orizzontale');
+ set('mirrorV',v?'↔ Specchio':'↕ Specchio',v?'Copia a specchio orizzontale':'Copia a specchio verticale');
+ [['symH',v?'Sim ↕':'Sim ↔'],['symV',v?'Sim ↔':'Sim ↕']].forEach(([id,t])=>{const e=$(id),l=e&&e.parentElement;if(!l)return;const n=[...l.childNodes].filter(x=>x.nodeType===3).pop();if(n)n.nodeValue=' '+t});
+ const o=$('repDir');if(o&&o.options.length>1){o.options[0].text=v?'↓ verticale':'→ orizzontale';o.options[1].text=v?'→ orizzontale':'↓ verticale'}}
+let lastO=null;const _d2=draw;
+draw=function(){_d2();if(orientation==='vertical'&&!window.__noRot)rotateView();if(lastO!==orientation){lastO=orientation;labels()}};
+/* esportazioni sempre nella vista standard (non ruotata) */
+document.querySelectorAll('button').forEach(b=>{const f=b.onclick;if(f&&/toDataURL/.test(f.toString())){b.onclick=function(ev){window.__noRot=true;draw();try{return f.call(this,ev)}finally{window.__noRot=false;draw()}}}});
+/* su smartphone la vista verticale è quella predefinita, finché non scegli tu */
+let chosen=null;try{chosen=localStorage.getItem('miyukiOri')}catch(e){}
+$('orientation').addEventListener('change',()=>{try{localStorage.setItem('miyukiOri','1')}catch(e){}});
+if(mobile()&&!chosen&&orientation!=='vertical'){orientation='vertical';$('orientation').value='vertical'}
 draw();
 })();
 </script></body></html>
