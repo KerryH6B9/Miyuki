@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Miyuki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#8b5fbf"><link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACbklEQVR42u3dMVbrMBRF0cTLA2Mm9NTMAmqmA0OjoCVZchzJ13p7D+A/fecgEwrp+vH6fYH/LB4B4kAciANxIA7EgTgQB+JAHCAOxIE4EAfiQByIA3EgDsQB4kAciANxIA7EgTgQB+JAHCAOxIE4EAfiQBxkWqNW8/b50uOf/Xr/mW9VA1xDjprs9AHs/DAyV1XrtTLgM3hgSuaqasUx8um0z8pcVa04xj+XlomZq6oVx1FP5P7czFX5Kos4An5Qbk3PXJWdAzsH4kAciANxgDgQB+JAHIgDcSAOxIE4EAeIA3EgDsSBOBAH4kAciANxIA4QByeJ49jjjm5Nz1yVnQM7R8APyv25mauquHOMfyItEzNXVfG1MvK5tM/KXFXF3znGPJ2tUzJXNVLKIbV/nGAsDnxbQRyIA3GAOBAHj1tn/Y/5k8l+E/6dw6VPXiuHfQaXMpc+LcroPeu8lz4tyug68dSXPi3K6Df37Jc++SrL1HG49KnTdDsH4kAciANxIA7EgTgQB+JAHCAOxIE4EAfiQByIA3EgDsQB4kAciANxIA7EgTgQx3Fc+tRpup2D2eNw6VOPufPsHC59evrEEvet1PHcFldZKCM6DmVkvlLXamU0PsfMVdX6tuLw0OS9cylVRsvcsx8eOs/OQbLD4nB4aP7mYedAHIgDcSAOxIE4EAfiQByIA8SBOBAH4kAciANxIA7EgThAHIgDcSAOxIE4EAfi2MjhoWnT7RycJA6HhyZvG8fvHA4PjS0j4rUy8rm0z8pcVcXfOcY8na1TMlc1UokTjHd+AJmrKhcHXiuIA3EgDsQB4kAciIMOfgGik92zf454KwAAAABJRU5ErkJggg=="><title>Miyuki Pattern Studio Plus</title>
+<style>
+:root{--bg:#f7f5fa;--ink:#292333;--muted:#716b7c;--accent:#8761b5;--line:#e5deed;--card:#fff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}header{padding:20px 24px;background:linear-gradient(120deg,#eee5fa,#fff);border-bottom:1px solid var(--line)}h1{font-size:25px;margin:0 0 4px}header p{margin:0;color:var(--muted)}main{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;padding:16px;max-width:1600px;margin:auto}.panel,.workspace{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 4px 16px #34204a08}.group{margin-bottom:19px}.group h2,.workspace h2{font-size:16px;margin:0 0 10px}.group label{display:block;font-size:13px;color:var(--muted);margin:7px 0 4px}input[type=number],select,input[type=text]{width:100%;padding:8px;border:1px solid #d8d0e3;border-radius:8px;background:white;color:var(--ink)}input[type=file]{max-width:100%;font-size:12px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px}.btn{border:1px solid #d8d0e3;background:white;border-radius:9px;padding:8px 10px;cursor:pointer;color:var(--ink);font-weight:600}.btn:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btnrow{display:flex;flex-wrap:wrap;gap:6px}.palette{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;max-height:280px;overflow:auto;padding:3px}.swatch{height:27px;border-radius:7px;border:2px solid white;outline:1px solid #d8d0e3;cursor:pointer;position:relative;min-width:0}.swatch.active{outline:3px solid var(--accent)}.swatch.active:after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:white;text-shadow:0 1px 3px #333;font-weight:900;font-size:12px}.small{font-size:12px;color:var(--muted)}.workspace{min-width:0}.workhead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.canvaswrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fcfbfe;padding:14px;min-height:300px}.canvaswrap canvas{display:block;max-width:none;touch-action:none;cursor:crosshair}.stats{display:flex;gap:15px;flex-wrap:wrap;margin:10px 0;color:var(--muted);font-size:13px}.notice{background:#f5effc;border-radius:9px;padding:10px;font-size:12px;color:#5d4b71}.hidden{display:none}.sep{height:1px;background:var(--line);margin:12px 0}.inlinecheck{display:flex;align-items:center;gap:7px;font-size:13px;margin-top:8px}.inlinecheck label{margin:0!important}.modehint{font-size:12px;background:#f8f5fc;border-radius:8px;padding:8px;margin-top:8px}@media(max-width:900px){main{grid-template-columns:1fr;padding:9px}header{padding:16px}}
+
+header{padding:9px 24px}header h1{font-size:19px;margin:0}header p{display:none}
+.canvaswrap{max-height:calc(100vh - 205px);min-height:300px}.palette{max-height:200px}
+@media(min-width:900px){.panel{position:sticky;top:8px;align-self:start;max-height:calc(100vh - 16px);overflow:auto}}
+#toolbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:5px;align-items:center;background:#fff;padding:2px 0 10px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+#toolbar .tbb{padding:6px 7px;font-size:12.5px;white-space:nowrap}#toolbar{gap:4px}#toolbar .vsep{width:1px;height:24px;background:var(--line);margin:0 3px}
+details.group{margin-bottom:8px;border:1px solid var(--line);border-radius:11px;padding:0 11px}
+details.group>summary{cursor:pointer;font-weight:700;font-size:14px;padding:9px 0;list-style:none;display:flex;justify-content:space-between}
+details.group>summary:after{content:'▸';color:var(--muted)}details.group[open]>summary:after{content:'▾'}
+details.group[open]{padding-bottom:11px}details.group[open]>summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+
+html{-webkit-text-size-adjust:100%}canvas,#toolbar,details.group>summary{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#toolscroll{display:contents}#drawerBtn,#drawerBack{display:none}
+@media(max-width:900px){
+ header{padding:8px 14px calc(8px + env(safe-area-inset-top,0px))}header h1{font-size:16px}
+ input,select,textarea{font-size:16px!important}
+ #toolscroll{display:flex;flex-basis:100%;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+ #toolscroll>*{flex:none}#toolbar .tbb,#toolbar .swatch{min-width:44px;min-height:44px;font-size:15px}
+ #colrow{flex-basis:100%}.canvaswrap{max-height:calc(100dvh - 215px);overscroll-behavior:contain}
+ .panel{position:fixed!important;left:0;right:0;bottom:0;top:auto!important;max-height:72dvh;overflow:auto;z-index:30;border-radius:18px 18px 0 0;transform:translateY(105%);transition:transform .25s;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px #0004}
+ .panel.open{transform:none}
+ #drawerBack{position:fixed;inset:0;background:#0006;z-index:25}#drawerBack.show{display:block}
+ #drawerBtn{display:flex;position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40;min-height:48px;padding:0 18px;border-radius:24px;background:#8b5fbf;color:#fff;border:0;font-weight:700;font-size:15px;align-items:center;box-shadow:0 4px 14px #0005}
+}
+
+#gbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 24px #0003;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));-webkit-user-select:none;user-select:none}
+body.guide #gbar{display:block}body.guide #toolbar,body.guide #drawerBtn,body.guide #drawerBack{display:none!important}
+#gbar .gin{max-width:780px;margin:0 auto;display:grid;gap:8px}
+#gbar .grow1{display:flex;gap:10px;align-items:center}
+#gbar .gcount{font-weight:700;font-size:15px;background:none;border:0;padding:6px 0;white-space:nowrap;color:var(--ink);text-decoration:underline dotted;min-height:36px}
+#gbar .gprog{flex:1;height:8px;border-radius:4px;background:#e9e2f0;overflow:hidden}#gbar .gprog i{display:block;height:100%;background:#8b5fbf;width:0;transition:width .2s}
+#gbar .gdesc{font-size:14px;line-height:1.35;color:var(--ink)}
+#gbar .gchips{display:flex;flex-wrap:wrap;gap:6px;max-height:88px;min-height:34px;overflow:auto;-webkit-overflow-scrolling:touch}
+#gbar .gchip{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:16px;font-size:13px;background:#fff;color:var(--ink);min-height:34px}
+#gbar .gchip i{width:14px;height:14px;border-radius:4px;border:1px solid #0003;flex:none}
+#gbar .gchip.ok{opacity:.4;text-decoration:line-through}
+#gbar .gnav{display:grid;grid-template-columns:1fr 1fr;gap:8px}#gbar .gtools{display:grid;grid-template-columns:2fr 2fr 1fr 1fr;gap:8px}
+#gbar .gb{min-height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:14px;font-weight:600;color:var(--ink);touch-action:manipulation}
+#gbar .gb.big{min-height:52px;font-size:17px}#gbar .gb.pri{background:#8b5fbf;color:#fff;border-color:#8b5fbf}#gbar .gb:disabled{opacity:.4}
+</style></head><body>
+<header><h1>🪡 Miyuki Pattern Studio Plus</h1><p>Disegna, duplica motivi, importa immagini e prepara schemi per le tue perline Delica.</p></header>
+<main><aside class="panel">
+<div class="group"><h2>1. Dimensioni e disposizione</h2><label for="sizeMode">Unità di misura del progetto</label><select id="sizeMode"><option value="beads">Numero di perline</option><option value="cm">Centimetri</option></select><div id="beadSizeBox"><div class="twocol"><div><label for="cols">Colonne</label><input id="cols" type="number" min="5" max="160" value="60"></div><div><label for="rows">Righe</label><input id="rows" type="number" min="3" max="80" value="24"></div></div></div><div id="cmSizeBox" class="hidden"><div class="twocol"><div><label for="sizeLength">Lunghezza (cm)</label><input id="sizeLength" type="number" min="0.1" max="100" step="0.1" value="9.6"></div><div><label for="sizeHeight">Altezza (cm)</label><input id="sizeHeight" type="number" min="0.1" max="30" step="0.1" value="3.8"></div></div><div class="small" id="cmEstimate">Con 11/0 Delica: circa 60 × 24 perline.</div></div><label for="beadType">Tipo di perlina</label><select id="beadType"><option value="delica">MIYUKI Delica</option><option value="round">MIYUKI Round Rocailles</option></select><label for="beadSize">Misura perlina</label><select id="beadSize"></select><div class="small" id="beadInfo">Diametro indicativo: 1,6 mm. Valore di riferimento MIYUKI.</div><label for="stitch">Tecnica</label><select id="stitch"><option value="peyote">Peyote (sfalsato)</option><option value="brick">Brick stitch (righe sfalsate)</option><option value="loom">Telaio (allineato)</option><option value="square">Square stitch (allineato)</option></select><label for="orientation">Visualizzazione del braccialetto</label><select id="orientation"><option value="horizontal">Orizzontale</option><option value="vertical">Verticale</option></select><div style="height:8px"></div><button class="btn primary" id="resize">Applica dimensioni</button><div class="small" style="margin-top:6px">L'orientamento cambia la visualizzazione, non i dati dello schema.</div></div>
+<div class="group"><h2>2. Palette colori</h2><input id="searchColor" type="text" placeholder="Cerca un colore…"><div id="palette" class="palette" style="margin-top:8px"></div><div class="small" style="margin-top:8px">Selezionato: <strong id="colorname">Lilla</strong></div><div class="small">Palette ampliata con molte sfumature. I nomi sono descrittivi, non codici ufficiali Miyuki.</div></div>
+<div class="group"><h2>3. Disegno e selezione</h2><div class="btnrow"><button class="btn primary" id="paint">✎ Disegna</button><button class="btn" id="erase">⌫ Gomma</button><button class="btn" id="selectTool">▧ Seleziona</button><button class="btn" id="fill">🪣 Secchiello</button><button class="btn" id="clear">Svuota</button></div><div class="btnrow" style="margin-top:7px"><button class="btn" id="undo" disabled>↶ Annulla</button><button class="btn" id="redo" disabled>↷ Ripeti</button></div><div class="sep"></div><div class="btnrow"><button class="btn" id="copy">Copia selezione</button><button class="btn" id="mirrorH">Copia a specchio ↔</button><button class="btn" id="mirrorV">Copia a specchio ↕</button><button class="btn" id="cut">Taglia selezione</button><button class="btn" id="paste">Incolla</button><button class="btn" id="cancelSel">Deseleziona</button></div><div class="small" style="margin-top:7px">Seleziona trascinando un rettangolo sulla griglia. Copia o taglia il motivo, poi incollalo: puoi spostare il puntatore e cliccare per posizionarlo.</div></div>
+<div class="group"><h2>4. Inserisci un'immagine</h2><label for="imageFile">Scegli un'immagine (PNG, JPG, WebP)</label><input id="imageFile" type="file" accept="image/*"><div class="twocol"><div><label for="imgW">Larghezza in perline</label><input id="imgW" type="number" min="1" max="160" value="20"></div><div><label for="imgH">Altezza in perline</label><input id="imgH" type="number" min="1" max="80" value="20"></div></div><label for="imgColors">Numero massimo di colori</label><select id="imgColors"><option>8</option><option selected>16</option><option>24</option><option>32</option><option>48</option><option>64</option></select><div class="inlinecheck"><input id="transparentBg" type="checkbox" checked><label for="transparentBg">Ignora sfondo bianco/trasparente</label></div><button class="btn primary" id="placeImage" style="margin-top:8px" disabled>Converti e posiziona</button><div class="modehint" id="imageStatus">Dopo aver scelto l'immagine, impostane le dimensioni. Il programma la riduce a una griglia di perline e abbina ogni pixel al colore disponibile più simile. Clicca sullo schema per scegliere il punto d'inserimento.</div></div>
+<div class="group"><h2>5. Salva ed esporta</h2><div class="btnrow"><button class="btn primary" id="png">Esporta PNG</button><button class="btn" id="json">Salva schema</button><button class="btn" id="load">Apri schema</button><input id="file" class="hidden" type="file" accept="application/json,.json"></div></div>
+<div class="notice">Suggerimento: prova 60 × 24 per un primo schema, ma verifica le misure sul tuo campione. La conversione delle immagini è un'approssimazione: i colori visualizzati non garantiscono una corrispondenza perfetta con le Delica reali.</div>
+<div class="group"><h2>6. Strumenti extra</h2><div class="btnrow"><button class="btn" id="rot90">Ruota 90°</button><button class="btn" id="rot180">Ruota 180°</button><button class="btn" id="panBtn">✋ Muovi vista</button></div><div class="twocol" style="margin-top:7px"><div><label for="repN">Ripeti selezione (volte)</label><input id="repN" type="number" min="1" max="50" value="3"></div><div><label for="repDir">Direzione</label><select id="repDir"><option value="h">→ orizzontale</option><option value="v">↓ verticale</option></select></div></div><button class="btn" id="repeat" style="margin-top:7px">Ripeti motivo</button><div class="small" style="margin-top:7px">Scorciatoie: Ctrl+C/X/V, Esc, Canc, Ctrl+rotella per lo zoom, Spazio o tasto centrale per spostare la vista.</div></div>
+<div class="group"><h2>7. Legenda e stampa</h2><label for="reservePct">Scorta perline (%)</label><input id="reservePct" type="number" min="0" max="100" value="10"><div id="legend" class="small" style="margin-top:8px"></div><button class="btn primary" id="printPdf" style="margin-top:8px">Stampa / PDF con legenda</button></div>
+</aside><section class="workspace"><div class="workhead"><h2>La tua griglia</h2><div class="btnrow"><label style="display:inline-flex;gap:4px;align-items:center;margin:0 6px 0 0;font-size:.85rem;white-space:nowrap"><input type="checkbox" id="symH" style="width:auto;margin:0"> Simmetria ↔</label><label style="display:inline-flex;gap:4px;align-items:center;margin:0 10px 0 0;font-size:.85rem;white-space:nowrap"><input type="checkbox" id="symV" style="width:auto;margin:0"> Simmetria ↕</label><button class="btn" id="zoomout">−</button><button class="btn" id="zoomin">+</button><button class="btn" id="gridtoggle">Nascondi griglia</button></div></div><div class="stats"><span id="dimensions">60 colonne × 24 righe</span><span id="count">0 perline colorate</span><span id="stitchlabel">Peyote</span><span id="orientationLabel">Orizzontale</span></div><div class="canvaswrap"><canvas id="board" aria-label="Griglia per disegnare lo schema"></canvas></div><p class="small" id="canvasHelp">Disegna con il mouse. In modalità Seleziona, trascina per evidenziare una zona.</p></section></main>
+<script>
+const base=[['Lilla','#c9a5e8'],['Lavanda chiara','#e4d5f5'],['Lavanda','#b69add'],['Viola pastello','#a98bd0'],['Viola','#8b5fbf'],['Viola intenso','#70449f'],['Prugna','#6b315f'],['Prugna scuro','#492342'],['Malva','#bd8ba8'],['Rosa cipria','#f3c5d4'],['Rosa pallido','#f8dce5'],['Rosa','#f2a6c8'],['Rosa antico','#d78da8'],['Ciclamino','#d45b9a'],['Fucsia','#d94391'],['Magenta scuro','#9f2869'],['Rosso chiaro','#ee777d'],['Rosso','#d84c55'],['Bordeaux','#852e49'],['Corallo chiaro','#f6b2a1'],['Corallo','#f18b72'],['Pesca','#ffc69f'],['Arancione chiaro','#ffc16b'],['Arancione','#f3a34a'],['Ambra','#d9852c'],['Giallo limone','#f8ed91'],['Giallo','#f4d66b'],['Ocra','#c99b38'],['Crema','#fff0cf'],['Avorio','#f8f1df'],['Beige chiaro','#ead9bc'],['Beige','#ddc7a5'],['Sabbia','#c6aa83'],['Marrone chiaro','#ad805e'],['Marrone','#8a6048'],['Marrone scuro','#5b4034'],['Verde menta chiaro','#c9e7d5'],['Menta','#a8d9c0'],['Verde salvia chiaro','#b9d0bc'],['Verde salvia','#91b9a1'],['Verde pastello','#8ec7a1'],['Verde','#3f9676'],['Verde bosco','#27634d'],['Verde scuro','#204637'],['Oliva chiaro','#c2c77d'],['Oliva','#90964c'],['Lime','#b9d95c'],['Turchese pallido','#b7e8e2'],['Turchese','#5dc7c4'],['Turchese scuro','#299a9b'],['Acqua','#83d8e5'],['Azzurro pallido','#c9e8fa'],['Azzurro','#78b8e8'],['Blu cielo','#559bd5'],['Blu','#466bb5'],['Blu reale','#31488e'],['Navy','#29385f'],['Indaco','#514f91'],['Periwinkle','#9ba9e6'],['Grigio ghiaccio','#e6e7ed'],['Grigio chiaro','#c9c9d2'],['Grigio','#a6a4ad'],['Grigio scuro','#6f6d78'],['Nero','#35323a'],['Bianco','#ffffff'],['Bianco caldo','#f7f4ee'],['Argento','#d7d9e0'],['Oro pallido','#e8d39a'],['Oro','#c6a34a']];
+const colors=[['Vuoto',null],...base];const beadSpecs={delica:{'15/0':1.3,'11/0':1.6,'10/0':2.2,'8/0':3.0},round:{'15/0':1.5,'11/0':2.0,'8/0':3.0,'6/0':4.5,'5/0':5.0}};let beadType='delica',beadSize='11/0',sizeMode='beads',cols=60,rows=24,cell=20,selected=1,tool='paint',showGrid=true,dragging=false,stitch='peyote',orientation='horizontal',data=[],selection=null,selStart=null,clipboard=null,clipboardInfo=null,pastePreview=null,loadedImage=null,imageMatrix=null,imageAnchor=null;
+let imageInfo=null;const GM=26;function isStag(){return stitch==='peyote'||stitch==='brick'}const STITCH_LABEL={peyote:'Peyote sfalsato',brick:'Brick stitch sfalsato',loom:'Telaio allineato',square:'Square stitch allineato'};const undoStack=[],redoStack=[];let strokeSnapshot=null;
+
+function currentBeadMm(){return beadSpecs[beadType][beadSize]||1.6}
+function beadPitchMm(){return currentBeadMm()}
+function calcCountsFromCm(){const L=Math.max(.1,Number($('sizeLength').value)||.1),H=Math.max(.1,Number($('sizeHeight').value)||.1),mm=beadPitchMm();let c=Math.max(5,Math.min(160,Math.round(L*10/mm))),r=Math.max(3,Math.min(80,Math.round(H*10/mm)));return {c,r,L,H,mm}}
+function updateBeadSizes(){const sel=$('beadSize'),old=beadSize;sel.innerHTML='';Object.keys(beadSpecs[beadType]).forEach(sz=>{const o=document.createElement('option');o.value=sz;o.textContent=sz;sel.appendChild(o)});beadSize=beadSpecs[beadType][old]?old:(beadType==='delica'?'11/0':'11/0');sel.value=beadSize;updateBeadInfo();updateCmEstimate()}
+function updateBeadInfo(){const mm=currentBeadMm();$('beadInfo').textContent=`Diametro indicativo: ${mm.toFixed(1).replace('.',',')} mm. Valore di riferimento MIYUKI; la misura reale del bracciale può variare con tecnica e tensione.`}
+function updateCmEstimate(){if(!$('cmEstimate'))return;const z=calcCountsFromCm();$('cmEstimate').textContent=`Con ${beadSize} ${beadType==='delica'?'Delica':'Round Rocailles'}: circa ${z.c} × ${z.r} perline. Le dimensioni sono una stima teorica.`}
+function updateSizeMode(){sizeMode=$('sizeMode').value; $('beadSizeBox').classList.toggle('hidden',sizeMode!=='beads');$('cmSizeBox').classList.toggle('hidden',sizeMode!=='cm');updateCmEstimate()}
+function snapshot(){return {cols,rows,stitch,orientation,data:data.map(r=>r.slice())}}
+function sameState(a,b){return JSON.stringify(a)===JSON.stringify(b)}
+function remember(){const s=snapshot();if(undoStack.length&&sameState(undoStack[undoStack.length-1],s))return;undoStack.push(s);if(undoStack.length>100)undoStack.shift();redoStack.length=0;updateHistoryButtons()}
+function restoreState(s){cols=s.cols;rows=s.rows;stitch=s.stitch;orientation=s.orientation;data=s.data.map(r=>r.slice());$('cols').value=cols;$('rows').value=rows;$('stitch').value=stitch;$('orientation').value=orientation;selection=null;draw();updateHistoryButtons()}
+function updateHistoryButtons(){$('undo').disabled=!undoStack.length;$('redo').disabled=!redoStack.length}
+function undo(){if(!undoStack.length)return;redoStack.push(snapshot());restoreState(undoStack.pop())}
+function redo(){if(!redoStack.length)return;undoStack.push(snapshot());restoreState(redoStack.pop())}
+const canvas=document.getElementById('board'),ctx=canvas.getContext('2d');const $=id=>document.getElementById(id);const viewCols=()=>orientation==='vertical'?rows:cols;const viewRows=()=>orientation==='vertical'?cols:rows;
+function dataCoord(vr,vc){return orientation==='vertical'?{r:cols-1-vc,c:vr}:{r:vr,c:vc}}
+function viewCoord(r,c){return orientation==='vertical'?{vr:c,vc:cols-1-r}:{vr:r,vc:c}}
+function makePalette(filter=''){const p=$('palette');p.innerHTML='';colors.forEach((c,i)=>{if(i===0||c[0].toLowerCase().includes(filter.toLowerCase())){let b=document.createElement('button');b.className='swatch'+(i===selected?' active':'');b.style.background=c[1]||'repeating-conic-gradient(#eee 0% 25%,white 0% 50%) 50%/10px 10px';b.title=c[0];b.setAttribute('aria-label',c[0]);b.onclick=()=>{selected=i;tool=i===0?'erase':'paint';updatePalette();$('colorname').textContent=c[0];setToolButtons()};p.appendChild(b)}})}function updatePalette(){[...$('palette').children].forEach(b=>b.classList.toggle('active',b.title===colors[selected][0]))}function setToolButtons(){['paint','erase','selectTool','fill'].forEach(id=>$(id).classList.toggle('primary',id===({paint:'paint',erase:'erase',select:'selectTool',fill:'fill'}[tool])));$('canvasHelp').textContent=tool==='select'?'Trascina per selezionare un rettangolo; copia/taglia, poi incolla e clicca per posizionare.':tool==='paste'?'Anteprima del motivo: sposta il mouse e clicca per incollare.':tool==='image'?'Clicca sul punto in cui vuoi inserire l’immagine convertita in perline.':tool==='fill'?'Usa il secchiello su una perlina: verrà riempita solo la zona contigua dello stesso colore, fino ai bordi.':'Disegna con il mouse o trascina per colorare più perline.'}
+function resetData(){remember();data=Array.from({length:rows},()=>Array(cols).fill(0));selection=null;draw()}
+function draw(){const vc=viewCols(),vr=viewRows(),extra=isStag()?cell/2:0;canvas.width=vc*cell+extra+1+GM;canvas.height=Math.round(vr*cell*KY())+1+GM;ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.translate(GM,GM);ctx.scale(1,KY());
+for(let y=0;y<vr;y++)for(let x=0;x<vc;x++){let offset=isStag()&&y%2?cell/2:0;let px=x*cell+offset+cell/2,py=y*cell+cell/2;let {r,c}=dataCoord(y,x);let ix=data[r][c];bPath(ctx,px,py,cell,cell);ctx.fillStyle=colors[ix]?.[1]||'#fff';ctx.fill();if(showGrid){ctx.strokeStyle=ix===0?'#d9d2e1':'#00000030';ctx.lineWidth=.7;ctx.stroke()}if(ix!==0){bShine(ctx,px,py,cell);ctx.fillStyle='#ffffff55';ctx.fill()}}
+if(showGrid){ctx.strokeStyle='#d9d2e1';ctx.lineWidth=.6;for(let y=0;y<=vr;y++){ctx.beginPath();ctx.moveTo(0,y*cell);ctx.lineTo(canvas.width,y*cell);ctx.stroke()}}
+ctx.save();ctx.strokeStyle='#7952a5';ctx.globalAlpha=.55;ctx.lineWidth=1.5;for(let x=10;x<vc;x+=10){ctx.beginPath();ctx.moveTo(x*cell,0);ctx.lineTo(x*cell,vr*cell);ctx.stroke()}for(let y=10;y<vr;y+=10){ctx.beginPath();ctx.moveTo(0,y*cell);ctx.lineTo(vc*cell+extra,y*cell);ctx.stroke()}ctx.restore();
+ctx.save();ctx.scale(1,1/KY());ctx.fillStyle='#6b5a7e';ctx.font=Math.max(8,cell*.45)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';for(let x=0;x<vc;x++)if(x===0||(x+1)%5===0)ctx.fillText(x+1,x*cell+cell/2,-4);ctx.textAlign='right';ctx.textBaseline='middle';for(let y=0;y<vr;y++)if(y===0||(y+1)%5===0)ctx.fillText(y+1,-5,(y*cell+cell/2)*KY());ctx.restore();
+if(selection){ctx.save();ctx.fillStyle='#8b5fbf22';ctx.strokeStyle='#7952a5';ctx.lineWidth=2;ctx.setLineDash([5,3]);outlinePoly(Array.from({length:selection.h},(_,i)=>{const o=isStag()&&(selection.y+i)%2?cell/2:0;return {l:selection.x*cell+o,r:(selection.x+selection.w)*cell+o,t:(selection.y+i)*cell}}));ctx.fill();ctx.stroke();ctx.restore()}
+if(pastePreview)drawPreview(pastePreview.matrix,pastePreview.x,pastePreview.y,pastePreview.info);if(imageMatrix&&imageAnchor)drawPreview(imageMatrix,imageAnchor.x,imageAnchor.y,imageInfo);
+$('dimensions').textContent=`${cols} colonne × ${rows} righe`; $('count').textContent=`${data.flat().filter(x=>x!==0).length} perline colorate`; $('stitchlabel').textContent=STITCH_LABEL[stitch]||'';$('orientationLabel').textContent=orientation==='horizontal'?'Orizzontale':'Verticale'}
+function outlinePoly(rs){ctx.beginPath();rs.forEach(q=>{ctx.lineTo(q.r,q.t);ctx.lineTo(q.r,q.t+cell)});for(let i=rs.length-1;i>=0;i--){ctx.lineTo(rs[i].l,rs[i].t+cpx());ctx.lineTo(rs[i].l,rs[i].t)}ctx.closePath()}function cpx(){return cell}
+function pasteX(info,i,j,x,y){let xx=x+j;if(!info||!isStag())return xx;const ps=info.rowPar[i],pd=(y+i)%2,t=(ps^pd);
+if(info.mirrorH){if(t===0&&pd===1)xx-=1}else{if(t===1&&pd===0)xx+=1}return xx}
+function drawPreview(matrix,x,y,info){ctx.save();ctx.globalAlpha=.82;for(let rr=0;rr<matrix.length;rr++)for(let cc=0;cc<(matrix[rr]||[]).length;cc++){let yy=y+rr,xx=pasteX(info,rr,cc,x,y);if(yy<0||xx<0||yy>=viewRows()||xx>=viewCols())continue;let idx=matrix[rr][cc];if(idx===null||idx===undefined)continue;const off=isStag()&&yy%2?cell/2:0;const px=xx*cell+off+cell/2,py=yy*cell+cell/2;bPath(ctx,px,py,cell,cell);ctx.fillStyle=colors[idx]?.[1]||'#fff';ctx.fill();if(showGrid){ctx.strokeStyle='#00000030';ctx.lineWidth=.7;ctx.stroke()}if(idx!==0){bShine(ctx,px,py,cell);ctx.fillStyle='#ffffff55';ctx.fill()}}ctx.setLineDash([5,3]);ctx.globalAlpha=1;ctx.strokeStyle='#7952a5';ctx.lineWidth=2;const w0=(matrix[0]||[]).length;outlinePoly(matrix.map((_,i)=>{const o=isStag()&&(y+i)%2?cell/2:0;return {l:pasteX(info,i,0,x,y)*cell+o,r:(pasteX(info,i,Math.max(0,w0-1),x,y)+1)*cell+o,t:(y+i)*cell}}));ctx.stroke();ctx.restore()}
+function viewAt(e){const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left)*(canvas.width/rect.width)-GM,y=(e.clientY-rect.top)*(canvas.height/rect.height)-GM;let vr=Math.floor(y/(cell*KY()));let offset=isStag()&&vr%2?cell/2:0;let vc=Math.floor((x-offset)/cell);return {vr,vc}}
+function paintAt(e){let {vr,vc}=viewAt(e);if(vr<0||vc<0||vr>=viewRows()||vc>=viewCols())return;let {r,c}=dataCoord(vr,vc);const v=tool==='erase'?0:selected,n=viewCols(),pts=[[vr,vc]];if($('symV')&&$('symV').checked){const v2=viewRows()-1-vr,sx=(isStag()&&vr%2===1&&v2%2===0)?1:0;pts.push([v2,vc+sx])}if($('symH')&&$('symH').checked)pts.slice().forEach(q=>pts.push([q[0],n-1-q[1]]));pts.forEach(q=>{if(q[0]<0||q[1]<0||q[0]>=viewRows()||q[1]>=n)return;const d=dataCoord(q[0],q[1]);data[d.r][d.c]=v});draw()}
+function bucketFill(vr,vc){if(vr<0||vc<0||vr>=viewRows()||vc>=viewCols())return;const start=dataCoord(vr,vc),target=data[start.r][start.c],replacement=selected;if(target===replacement)return;remember();const q=[[vr,vc]],seen=new Set();while(q.length){const [y,x]=q.pop(),key=y+','+x;if(seen.has(key)||y<0||x<0||y>=viewRows()||x>=viewCols())continue;seen.add(key);const pos=dataCoord(y,x);if(data[pos.r][pos.c]!==target)continue;data[pos.r][pos.c]=replacement;q.push([y-1,x],[y+1,x],[y,x-1],[y,x+1])}draw()}
+function cl(p){return {vr:Math.max(0,Math.min(viewRows()-1,p.vr)),vc:Math.max(0,Math.min(viewCols()-1,p.vc))}}
+function clampPaste(x,y){const m=pastePreview.matrix,h=m.length,w=(m[0]||[]).length;y=Math.max(0,Math.min(viewRows()-h,y));let mn=1e9,mx=-1e9;for(let i=0;i<h;i++){mn=Math.min(mn,pasteX(pastePreview.info,i,0,x,y));mx=Math.max(mx,pasteX(pastePreview.info,i,w-1,x,y))}if(mn<0){x-=mn;mx-=mn}if(mx>=viewCols())x-=mx-viewCols()+1;pastePreview.x=Math.max(0,x);pastePreview.y=y}
+function rectFrom(a,b){return {x:Math.min(a.vc,b.vc),y:Math.min(a.vr,b.vr),w:Math.abs(a.vc-b.vc)+1,h:Math.abs(a.vr-b.vr)+1}}
+canvas.addEventListener('pointerdown',e=>{let pos=viewAt(e);if(tool==='select'){dragging=true;selStart=cl(pos);{const q=cl(pos);selection={x:q.vc,y:q.vr,w:1,h:1}};canvas.setPointerCapture(e.pointerId);draw();return}if(tool==='paste'&&pastePreview){remember();clampPaste(pos.vc,pos.vr);commitMatrix(pastePreview.matrix,pastePreview.y,pastePreview.x,pastePreview.info);pastePreview=null;tool='paint';setToolButtons();draw();return}if(tool==='image'&&imageMatrix){remember();commitMatrix(imageMatrix,pos.vr,pos.vc,imageInfo);imageMatrix=null;imageAnchor=null;tool='paint';$('imageStatus').textContent='Immagine inserita. Puoi continuare a modificare lo schema.';setToolButtons();draw();return}if(tool==='fill'){bucketFill(pos.vr,pos.vc);return}remember();dragging=true;canvas.setPointerCapture(e.pointerId);paintAt(e)});
+canvas.addEventListener('pointermove',e=>{if(tool==='select'&&dragging&&selStart){selection=rectFrom(selStart,cl(viewAt(e)));draw();return}if(tool==='paste'&&pastePreview){let p=viewAt(e);clampPaste(p.vc,p.vr);draw();return}if(tool==='image'&&imageMatrix){let p=viewAt(e);imageAnchor={x:p.vc,y:p.vr};draw();return}if(dragging)paintAt(e)});canvas.addEventListener('pointerup',()=>{dragging=false;selStart=null});canvas.addEventListener('pointercancel',()=>{dragging=false;selStart=null});
+function selectedMatrix(cut=false){if(!selection)return null;let m=[];for(let y=selection.y;y<selection.y+selection.h;y++){let row=[];for(let x=selection.x;x<selection.x+selection.w;x++){let {r,c}=dataCoord(y,x);row.push(data[r][c]);if(cut)data[r][c]=0}m.push(row)}return m}
+function commitMatrix(matrix,y,x,info){for(let rr=0;rr<matrix.length;rr++)for(let cc=0;cc<(matrix[rr]||[]).length;cc++){let yy=y+rr,xx=pasteX(info,rr,cc,x,y);if(yy<0||xx<0||yy>=viewRows()||xx>=viewCols())continue;let val=matrix[rr][cc];if(val===null||val===undefined)continue;let {r,c}=dataCoord(yy,xx);data[r][c]=val}}
+$('copy').onclick=()=>{clipboard=selectedMatrix(false);if(!clipboard){alert('Prima seleziona una zona della griglia.');return}clipboardInfo={mirrorH:false,rowPar:clipboard.map((_,i)=>(selection.y+i)%2)};alert('Motivo copiato. Premi Incolla e clicca nel punto desiderato.')};function mirrorSelection(axis){
+ const m=selectedMatrix(false);
+ if(!m){alert('Prima seleziona una zona della griglia.');return}
+ // parità (pari/dispari) delle righe di origine, nell'ordine in cui finiscono nella matrice copiata
+ const par=m.map((_,i)=>(selection.y+i)%2);
+ if(axis==='h'){clipboard=m.map(row=>row.slice().reverse());clipboardInfo={mirrorH:true,rowPar:par}}
+ else{clipboard=m.slice().reverse().map(row=>row.slice());clipboardInfo={mirrorH:false,rowPar:par.slice().reverse()}}
+ alert((axis==='h'?'Copia specchiata in orizzontale pronta.':'Copia specchiata in verticale pronta.')+' Premi Incolla e controlla l’anteprima.');
+} $('mirrorH').onclick=()=>mirrorSelection('h');$('mirrorV').onclick=()=>mirrorSelection('v');$('cut').onclick=()=>{if(!selection){alert('Prima seleziona una zona della griglia.');return}remember();clipboard=selectedMatrix(true);clipboardInfo={mirrorH:false,rowPar:clipboard.map((_,i)=>(selection.y+i)%2)};draw();alert('Motivo tagliato e copiato.')};$('paste').onclick=()=>{if(!clipboard){alert('Non c’è nessun motivo copiato.');return}pastePreview={matrix:clipboard.map(r=>r.slice()),x:0,y:0,info:clipboardInfo};tool='paste';setToolButtons();draw()};$('cancelSel').onclick=()=>{selection=null;pastePreview=null;imageAnchor=null;if(tool==='select'||tool==='paste'||tool==='image')tool='paint';setToolButtons();draw()};
+$('resize').onclick=()=>{let nc,nr;if($('sizeMode').value==='cm'){const z=calcCountsFromCm();nc=z.c;nr=z.r}else{nc=Number($('cols').value);nr=Number($('rows').value)}if(!Number.isFinite(nc)||!Number.isFinite(nr)||nc<5||nc>160||nr<3||nr>80){alert('Le dimensioni richieste superano i limiti della griglia (5–160 colonne, 3–80 righe).');return}remember();let old=data;cols=nc;rows=nr;stitch=$('stitch').value;orientation=$('orientation').value;data=Array.from({length:rows},(_,r)=>Array.from({length:cols},(_,c)=>old[r]?.[c]??0));$('cols').value=cols;$('rows').value=rows;selection=null;draw()};$('orientation').onchange=()=>{orientation=$('orientation').value;draw()};$('sizeMode').onchange=updateSizeMode;$('beadType').onchange=()=>{beadType=$('beadType').value;updateBeadSizes()};$('beadSize').onchange=()=>{beadSize=$('beadSize').value;updateBeadInfo();updateCmEstimate()};$('sizeLength').oninput=updateCmEstimate;$('sizeHeight').oninput=updateCmEstimate;$('paint').onclick=()=>{tool='paint';if(selected===0)selected=1;updatePalette();$('colorname').textContent=colors[selected][0];setToolButtons()};$('erase').onclick=()=>{tool='erase';setToolButtons()};$('selectTool').onclick=()=>{tool='select';setToolButtons()};$('fill').onclick=()=>{if(selected===0){alert('Scegli prima un colore diverso da Vuoto.');return}tool='fill';setToolButtons()};$('undo').onclick=undo;$('redo').onclick=redo;document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}});$('clear').onclick=()=>{if(confirm('Svuotare tutto lo schema?'))resetData()};$('zoomin').onclick=()=>{cell=Math.min(36,cell+3);draw()};$('zoomout').onclick=()=>{cell=Math.max(10,cell-3);draw()};$('gridtoggle').onclick=()=>{showGrid=!showGrid;$('gridtoggle').textContent=showGrid?'Nascondi griglia':'Mostra griglia';draw()};$('searchColor').oninput=e=>makePalette(e.target.value);
+$('imageFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{loadedImage=await createImageBitmap(f);$('imgW').value=Math.min(viewCols(),Number($('imgW').value)||20);$('imgH').value=Math.min(viewRows(),Math.round(loadedImage.height/loadedImage.width*Number($('imgW').value))||20);$('placeImage').disabled=false;$('imageStatus').textContent=`Immagine caricata: ${loadedImage.width} × ${loadedImage.height} pixel. Scegli dimensioni e premi Converti e posiziona.`}catch(err){alert('Non riesco ad aprire questa immagine.')}};
+function rgb(hex){return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]}function nearestColor(r,g,b){let best=1,dist=Infinity;for(let i=1;i<colors.length;i++){let [R,G,B]=rgb(colors[i][1]);let d=(r-R)**2+(g-G)**2+(b-B)**2;if(d<dist){dist=d;best=i}}return best}
+function quantize(img,w,h,maxColors,ignoreWhite){let tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;let t=tmp.getContext('2d',{willReadFrequently:true});t.clearRect(0,0,w,h);t.drawImage(img,0,0,w,h);let id=t.getImageData(0,0,w,h),pixels=[];for(let i=0;i<id.data.length;i+=4){let a=id.data[i+3],r=id.data[i],g=id.data[i+1],b=id.data[i+2];if(a<40||(ignoreWhite&&r>238&&g>238&&b>238))pixels.push(null);else pixels.push([r,g,b])}
+// Reduce to a limited palette using deterministic RGB quantization, then map to available bead colors.
+let bins=new Map();for(let px of pixels)if(px){let key=px.map(v=>Math.min(7,Math.floor(v/32))).join(',');let z=bins.get(key)||{sum:[0,0,0],n:0};z.sum=z.sum.map((v,i)=>v+px[i]);z.n++;bins.set(key,z)}let representatives=[...bins.values()].map(z=>z.sum.map(v=>Math.round(v/z.n)));if(representatives.length>maxColors){representatives.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));let reduced=[];for(let j=0;j<maxColors;j++)reduced.push(representatives[Math.round(j*(representatives.length-1)/Math.max(1,maxColors-1))]);representatives=reduced}return Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>{let px=pixels[y*w+x];if(!px)return null;let nearest=representatives.reduce((best,q)=>{let d=px.reduce((s,v,i)=>s+(v-q[i])**2,0);return d<best.d?{d,q}:best},{d:Infinity,q:representatives[0]}).q;return nearestColor(...nearest)}))}
+$('placeImage').onclick=()=>{if(!loadedImage)return;let w=Number($('imgW').value),h=Number($('imgH').value),max=Number($('imgColors').value);if(w<1||h<1||w>160||h>80){alert('Dimensioni non valide.');return}imageMatrix=quantize(loadedImage,w,h,max,$('transparentBg').checked);imageAnchor={x:0,y:0};tool='image';setToolButtons();$('imageStatus').textContent='Conversione pronta. Sposta il mouse sulla griglia e clicca per inserire l’immagine nel punto scelto.';draw()};
+$('png').onclick=()=>{const a=document.createElement('a');a.download='schema-miyuki.png';a.href=canvas.toDataURL('image/png');a.click()};$('json').onclick=()=>{let blob=new Blob([JSON.stringify({app:'Miyuki Pattern Studio Plus',version:4,cols,rows,stitch,orientation,beadType,beadSize,sizeMode,data},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='schema-miyuki.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};$('load').onclick=()=>$('file').click();$('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!Number.isInteger(o.cols)||!Number.isInteger(o.rows)||o.cols<5||o.cols>160||o.rows<3||o.rows>80||!Array.isArray(o.data)||o.data.length!==o.rows||o.data.some(r=>!Array.isArray(r)||r.length!==o.cols||r.some(v=>!Number.isInteger(v)||v<0||v>=colors.length)))throw Error();cols=o.cols;rows=o.rows;stitch=STITCH_LABEL[o.stitch]?o.stitch:'peyote';orientation=o.orientation==='vertical'?'vertical':'horizontal';beadType=o.beadType==='round'?'round':'delica';beadSize=beadSpecs[beadType][o.beadSize]?o.beadSize:(beadType==='delica'?'11/0':'11/0');sizeMode=o.sizeMode==='cm'?'cm':'beads';data=o.data;$('cols').value=cols;$('rows').value=rows;$('stitch').value=stitch;$('orientation').value=orientation;$('beadType').value=beadType;updateBeadSizes();$('beadSize').value=beadSize;$('sizeMode').value=sizeMode;updateSizeMode();selection=null;draw()}catch(err){alert('File non valido o non compatibile con questa versione.')}e.target.value=''};
+data=Array.from({length:rows},()=>Array(cols).fill(0));makePalette();$('beadType').value=beadType;updateBeadSizes();$('sizeMode').value=sizeMode;updateSizeMode();draw();setToolButtons();updateHistoryButtons();
+
+/* ===== Miglioramenti v2 ===== */
+function toast(m){let t=$('toastBox');if(!t){t=document.createElement('div');t.id='toastBox';t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#3b2a4d;color:#fff;padding:9px 16px;border-radius:10px;font-size:.9rem;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;max-width:85vw';document.body.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2600)}
+window.alert=m=>toast(m);
+const rowPar=(m,rev)=>{const p=m.map((_,i)=>(selection.y+i)%2);return rev?p.reverse():p};
+$('rot180').onclick=()=>{const m=selectedMatrix(false);if(!m){toast('Prima seleziona una zona della griglia.');return}clipboard=m.slice().reverse().map(r=>r.slice().reverse());clipboardInfo={mirrorH:true,rowPar:rowPar(m,true)};toast('Rotazione 180° pronta: premi Incolla.')};
+$('rot90').onclick=()=>{const m=selectedMatrix(false);if(!m){toast('Prima seleziona una zona della griglia.');return}const h=m.length,w=m[0].length;clipboard=Array.from({length:w},(_,i)=>Array.from({length:h},(_,j)=>m[h-1-j][i]));clipboardInfo=null;toast('Rotazione 90° pronta (nel peyote è approssimata): premi Incolla.')};
+$('repeat').onclick=()=>{if(!selection){toast('Prima seleziona il modulo da ripetere.');return}const n=Math.max(1,Math.min(50,Number($('repN').value)||1)),m=selectedMatrix(false),info={mirrorH:false,rowPar:rowPar(m,false)},s0={...selection};remember();for(let k=1;k<=n;k++){if($('repDir').value==='h')commitMatrix(m,s0.y,s0.x+k*s0.w,info);else commitMatrix(m,s0.y+k*s0.h,s0.x,info)}draw();toast('Motivo ripetuto '+n+' volte.')};
+// scorciatoie
+let spaceDown=false,panMode=false;
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const k=e.key.toLowerCase(),m=e.ctrlKey||e.metaKey;if(m&&k==='c'){e.preventDefault();$('copy').click()}else if(m&&k==='x'){e.preventDefault();$('cut').click()}else if(m&&k==='v'){e.preventDefault();$('paste').click()}else if(k==='escape'){$('cancelSel').click()}else if((k==='delete'||k==='backspace')&&selection){e.preventDefault();remember();selectedMatrix(true);draw();toast('Selezione svuotata.')}else if(k===' '){e.preventDefault();spaceDown=true}});
+document.addEventListener('keyup',e=>{if(e.key===' ')spaceDown=false});
+// spostamento vista e zoom con rotella
+const box=canvas.parentElement;canvas.style.touchAction='none';let pan=null;
+$('panBtn').onclick=()=>{panMode=!panMode;$('panBtn').classList.toggle('primary',panMode)};
+box.addEventListener('pointerdown',e=>{if(e.button===1||panMode||spaceDown){pan={x:e.clientX,y:e.clientY,l:box.scrollLeft,t:box.scrollTop};e.stopPropagation();e.preventDefault()}},true);
+window.addEventListener('pointermove',e=>{if(pan){box.scrollLeft=pan.l-(e.clientX-pan.x);box.scrollTop=pan.t-(e.clientY-pan.y)}});
+window.addEventListener('pointerup',()=>{pan=null});
+box.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();cell=Math.max(10,Math.min(36,cell+(e.deltaY<0?2:-2)));draw()},{passive:false});
+// legenda, stampa, salvataggio automatico
+function legendHTML(){const cnt={};let tot=0;data.forEach(r=>r.forEach(v=>{if(v>0){cnt[v]=(cnt[v]||0)+1;tot++}}));const pct=Math.max(0,Number($('reservePct').value)||0);const rows=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).map(i=>`<div style="display:flex;gap:6px;align-items:center;margin:2px 0"><span style="width:14px;height:14px;border-radius:50%;background:${colors[i][1]};border:1px solid #0003;flex:none"></span><span style="flex:1">${colors[i][0]}</span><b>${cnt[i]}</b><span>(con scorta ${Math.ceil(cnt[i]*(1+pct/100))})</span></div>`).join('');return rows?rows+`<div style="margin-top:5px"><b>Totale: ${tot}</b> perline (${Math.ceil(tot*(1+pct/100))} con scorta)</div>`:'Nessuna perlina colorata.'}
+function updateLegend(){$('legend').innerHTML=legendHTML()}$('reservePct').oninput=updateLegend;
+$('printPdf').onclick=()=>{const w=window.open('');if(!w){toast('Il browser ha bloccato la finestra: consenti i popup.');return}w.document.write('<title>Schema Miyuki</title><body style="font-family:sans-serif"><h2>Schema Miyuki</h2><img src="'+canvas.toDataURL('image/png')+'" style="max-width:100%"><h3>Legenda perline</h3>'+legendHTML()+'<script>onload=()=>setTimeout(()=>print(),300)<\/script></body>');w.document.close()};
+const _draw=draw;let sidePend=false,saveT=null;draw=function(){_draw();if(!sidePend){sidePend=true;requestAnimationFrame(()=>{sidePend=false;updateLegend()})}clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem('miyukiAutosave',JSON.stringify({app:'Miyuki Pattern Studio Plus',version:4,cols,rows,stitch,orientation,beadType,beadSize,sizeMode,data}))}catch(e){}},700)};
+try{const sv=localStorage.getItem('miyukiAutosave');if(sv){$('file').onchange({target:{files:[new File([sv],'auto.json')]}});setTimeout(()=>toast('Ultimo lavoro ripristinato automaticamente.'),400)}}catch(e){}
+draw();
+
+/* ===== Layout compatto v3 ===== */
+(function(){
+const tb=document.createElement('div');tb.id='toolbar';
+const spec=[['paint','✎','Disegna'],['erase','⌫','Gomma'],['selectTool','▧','Seleziona'],['fill','🪣','Secchiello'],0,
+['undo','↶','Annulla (Ctrl+Z)'],['redo','↷','Ripeti (Ctrl+Y)'],0,
+['copy','⧉ Copia','Copia selezione (Ctrl+C)'],['cut','✂ Taglia','Taglia selezione (Ctrl+X)'],['paste','📋 Incolla','Incolla (Ctrl+V)'],['cancelSel','✕','Deseleziona (Esc)'],0,
+['mirrorH','↔ Specchio','Copia a specchio orizzontale'],['mirrorV','↕ Specchio','Copia a specchio verticale'],['rot90','⟳ 90°','Ruota 90°'],['rot180','⟳ 180°','Ruota 180°'],0,
+['sym'],0,['zoomout','−','Riduci'],['zoomin','+','Ingrandisci'],['gridtoggle',null,'Mostra/nascondi griglia'],['panBtn','✋','Muovi vista (o tieni premuto Spazio)'],['clear','🗑','Svuota tutto']];
+spec.forEach(it=>{if(!it){const v=document.createElement('span');v.className='vsep';tb.appendChild(v);return}
+ if(it[0]==='sym'){['symH','symV'].forEach(id=>{const l=$(id).parentElement;l.style.margin='0 4px 0 0';l.title='Disegno simmetrico';tb.appendChild(l)});return}
+ const el=$(it[0]);if(it[1])el.textContent=it[1];el.title=it[2];el.classList.add('tbb');tb.appendChild(el)});
+const ws=document.querySelector('.workspace');const wh=ws.querySelector('.workhead');if(wh)wh.remove();ws.prepend(tb);
+$('symH').parentElement.lastChild.textContent=' Sim ↔';$('symV').parentElement.lastChild.textContent=' Sim ↕';
+// sidebar a tendina
+const panel=document.querySelector('.panel');
+[...panel.querySelectorAll('.group')].forEach(g=>{const h=g.querySelector('h2'),t=h.textContent.replace(/^\d+\.\s*/,'');
+ if(/^Disegno e selezione/.test(t)){g.remove();return}
+ h.remove();const d=document.createElement('details');d.className='group';const sm=document.createElement('summary');sm.textContent=t==='Strumenti extra'?'Ripeti motivo':t;
+ d.append(sm,...g.childNodes);g.replaceWith(d)});
+const ds=[...panel.querySelectorAll('details.group')],pal=ds.find(d=>/Palette/.test(d.firstChild.textContent));
+if(pal){pal.open=true;panel.prepend(pal)}
+ds.forEach(d=>d.addEventListener('toggle',()=>{if(d.open&&d!==pal)ds.forEach(o=>{if(o!==d&&o!==pal)o.open=false})}));
+const nt=panel.querySelector(':scope > .notice'),dim=ds.find(d=>/Dimensioni/.test(d.firstChild.textContent));if(nt&&dim)dim.appendChild(nt);
+$('canvasHelp').textContent='Disegna con il mouse. Con ▧ trascina per selezionare: poi Copia, Specchio o Ruota, quindi Incolla e clicca sulla griglia.';
+})();
+
+/* ===== v4: colori, forme, istruzioni, anteprima ===== */
+(function(){
+const tb=$('toolbar'),panel=document.querySelector('.panel');
+let recent=[],pickPrev='paint',shapeType='line',shapeDrag=null;
+// riga colore attivo + recenti
+const cr=document.createElement('div');cr.id='colrow';cr.style.cssText='flex-basis:100%;display:flex;gap:5px;align-items:center;font-size:12.5px;color:var(--muted)';tb.prepend(cr);
+function sw(i,big){const b=document.createElement('button');b.className='swatch';b.style.cssText='width:'+(big?30:22)+'px;height:'+(big?30:22)+'px;flex:none;background:'+(colors[i][1]||'repeating-conic-gradient(#eee 0% 25%,white 0% 50%) 50%/8px 8px');b.title=colors[i][0];return b}
+function renderCol(){cr.innerHTML='';const c=sw(selected,true);c.style.outline='3px solid var(--accent)';cr.append(c);const t=document.createElement('b');t.textContent=colors[selected][0];t.style.cssText='color:var(--ink);min-width:70px';cr.append(t,Object.assign(document.createElement('span'),{textContent:'Recenti:'}));recent.forEach(i=>{const b=sw(i);b.onclick=()=>setColor(i);cr.append(b)})}
+function pushRecent(i){if(i===0)return;recent=[i,...recent.filter(x=>x!==i)].slice(0,8)}
+function setColor(i){selected=i;if(i===0){if(tool==='paint')tool='erase'}else if(tool==='erase')tool='paint';updatePalette();$('colorname').textContent=colors[i][0];pushRecent(i);renderCol();setToolButtons()}
+let prevTool='paint';const pal=$('palette');pal.addEventListener('click',()=>{prevTool=tool},true);
+pal.addEventListener('click',()=>{if(prevTool==='shape'||prevTool==='replace'||prevTool==='pick'){tool=prevTool==='pick'?'paint':prevTool}pushRecent(selected);renderCol();setToolButtons()});
+// pulsanti nuovi
+function mkBtn(id,txt,title,fn){const b=document.createElement('button');b.className='btn tbb';b.id=id;b.textContent=txt;b.title=title;b.onclick=fn;return b}
+const setT=(t,st)=>{if(t==='pick'&&tool!=='pick')pickPrev=tool;tool=t;if(st)shapeType=st;setToolButtons()};
+const nb=[mkBtn('pickBtn','💧','Contagocce (I o clic destro)',()=>setT('pick')),mkBtn('lineBtn','╱','Linea (L)',()=>setT('shape','line')),mkBtn('rectBtn','▭','Rettangolo (R)',()=>setT('shape','rect')),mkBtn('ellBtn','◯','Ellisse (O)',()=>setT('shape','ell')),mkBtn('triBtn','△','Triangolo (T): trascina dal basso verso l’alto per capovolgerlo',()=>setT('shape','tri')),mkBtn('rhoBtn','◇','Rombo (D)',()=>setT('shape','rho')),mkBtn('hrtBtn','♡','Cuore (H)',()=>setT('shape','heart')),mkBtn('replBtn','⇄','Sostituisci colore: clicca una perlina per cambiarne il colore ovunque (X)',()=>setT('replace'))];
+const fl=document.createElement('label');fl.style.cssText='display:inline-flex;gap:3px;align-items:center;margin:0;font-size:12px';fl.innerHTML='<input type="checkbox" id="shapeFill" style="width:auto;margin:0"> pieno';
+$('fill').after(...nb,fl);
+const help={shape:'Trascina sulla griglia per tracciare la forma (spunta “pieno” per riempirla).',pick:'Clicca una perlina per prenderne il colore.',replace:'Clicca una perlina: il suo colore verrà sostituito ovunque con il colore attivo.'};
+const _stb=setToolButtons;setToolButtons=function(){_stb();const m={pickBtn:tool==='pick',lineBtn:tool==='shape'&&shapeType==='line',rectBtn:tool==='shape'&&shapeType==='rect',ellBtn:tool==='shape'&&shapeType==='ell',triBtn:tool==='shape'&&shapeType==='tri',rhoBtn:tool==='shape'&&shapeType==='rho',hrtBtn:tool==='shape'&&shapeType==='heart',replBtn:tool==='replace'};for(const k in m)$(k).classList.toggle('primary',m[k]);if(help[tool])$('canvasHelp').textContent=help[tool]};
+// forme
+function shapeCells(a,b,type,fill){if(type==='tri'||type==='rho'||type==='heart')return shapeCellsX(a,b,type,fill);const x0=Math.min(a.vc,b.vc),x1=Math.max(a.vc,b.vc),y0=Math.min(a.vr,b.vr),y1=Math.max(a.vr,b.vr),out=[];
+ if(type==='line'){let x=a.vc,y=a.vr;const dx=Math.abs(b.vc-x),dy=-Math.abs(b.vr-y),sx=x<b.vc?1:-1,sy=y<b.vr?1:-1;let e=dx+dy;for(;;){out.push([y,x]);if(x===b.vc&&y===b.vr)break;const e2=2*e;if(e2>=dy){e+=dy;x+=sx}if(e2<=dx){e+=dx;y+=sy}}}
+ else if(type==='rect'){for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(fill||y===y0||y===y1||x===x0||x===x1)out.push([y,x])}
+ else{const cx=(x0+x1)/2,cy=(y0+y1)/2,rx=(x1-x0)/2+.5,ry=(y1-y0)/2+.5,In=(x,y)=>((x-cx)/rx)**2+((y-cy)/ry)**2<=1;for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(In(x,y)&&(fill||!(In(x+1,y)&&In(x-1,y)&&In(x,y+1)&&In(x,y-1))))out.push([y,x])}
+ return out}
+const box2=canvas.parentElement;
+function pickAt(pos){if(pos.vr<0||pos.vc<0||pos.vr>=viewRows()||pos.vc>=viewCols())return;const d=dataCoord(pos.vr,pos.vc);const was=tool;if(tool==='pick')tool=pickPrev;setColor(data[d.r][d.c])}
+box2.addEventListener('pointerdown',e=>{if(pan||e.target!==canvas)return;const pos=viewAt(e);
+ if(e.button===2||tool==='pick'){e.stopPropagation();e.preventDefault();pickAt(pos);return}
+ if(e.button!==0)return;
+ if(tool==='replace'){e.stopPropagation();if(pos.vr<0||pos.vc<0||pos.vr>=viewRows()||pos.vc>=viewCols())return;const d=dataCoord(pos.vr,pos.vc),t=data[d.r][d.c];if(t===selected){toast('Il colore è già quello attivo.');return}remember();let n=0;data.forEach(r=>r.forEach((v,i)=>{if(v===t){r[i]=selected;n++}}));draw();toast('Sostituite '+n+' perline.');return}
+ if(tool==='shape'){e.stopPropagation();shapeDrag={a:cl(pos),b:cl(pos)};canvas.setPointerCapture(e.pointerId);draw()}},true);
+box2.addEventListener('contextmenu',e=>{if(e.target===canvas)e.preventDefault()});
+window.addEventListener('pointermove',e=>{if(shapeDrag){shapeDrag.b=cl(viewAt(e));draw()}});
+window.addEventListener('pointerup',()=>{if(!shapeDrag)return;const cells=shapeCells(shapeDrag.a,shapeDrag.b,shapeType,$('shapeFill').checked);shapeDrag=null;remember();cells.forEach(([r,c])=>{const d=dataCoord(r,c);data[d.r][d.c]=selected});draw()});
+// sezioni nuove
+function mk(title,html,fn){const d=document.createElement('details');d.className='group';d.innerHTML='<summary>'+title+'</summary>'+html;panel.append(d);d.addEventListener('toggle',()=>{if(d.open)fn()});return d}
+const dI=mk('Istruzioni riga per riga','<div class="btnrow" style="align-items:center"><button class="btn" id="rowPrev">‹</button><input type="number" id="curRow" min="1" value="1" style="width:70px"><button class="btn" id="rowNext">›</button><label style="display:inline-flex;gap:4px;align-items:center;margin:0"><input type="checkbox" id="hlRow" style="width:auto"> evidenzia</label></div><textarea id="instr" readonly rows="9" style="width:100%;margin-top:8px;font:12px monospace"></textarea><button class="btn" id="copyInstr" style="margin-top:6px">Copia testo</button>',()=>updateInstr());
+const dM=mk('Anteprima realistica','<canvas id="mini" style="max-width:100%;border-radius:8px;background:#2b2233"></canvas><div class="small">Così apparirà il lavoro, senza griglia.</div>',()=>updateMini());
+function instrText(){if(stitch==='peyote')return peyoteInstr();const o=[];for(let r=0;r<viewRows();r++){const runs=[];let prev=null,n=0;const flush=()=>{if(prev!==null)runs.push(n+'× '+(prev===0?'vuote':colors[prev][0]))};for(let c=0;c<viewCols();c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v===prev)n++;else{flush();prev=v;n=1}}flush();o.push('Riga '+(r+1)+': '+runs.join(', '))}return o.join('\n')}
+function updateInstr(){if(dI.open)$('instr').value=instrText()}
+function updateMini(){if(!dM.open)return;const m=$('mini'),vc=viewCols(),vr=viewRows(),pc=Math.max(2,Math.min(8,Math.floor(300/(vc+.5)))),x=m.getContext('2d'),pe=isStag();m.width=Math.round((vc+(pe?.5:0))*pc);const ch=pc/pixAspect();m.height=Math.round(vr*ch);x.fillStyle='#2b2233';x.fillRect(0,0,m.width,m.height);for(let r=0;r<vr;r++)for(let c=0;c<vc;c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(!v)continue;x.fillStyle=colors[v][1];bPath(x,(c+(pe&&r%2?.5:0))*pc+pc/2,r*ch+ch/2,pc,ch);x.fill()}}
+const goRow=d=>{const v=Math.max(1,Math.min(stepMax(),(+$('curRow').value||1)+d));$('curRow').value=v;$('hlRow').checked=true;draw()};
+$('rowPrev').onclick=()=>goRow(-1);$('rowNext').onclick=()=>goRow(1);$('curRow').oninput=draw;$('hlRow').onchange=draw;
+$('copyInstr').onclick=()=>{const t=$('instr');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}toast('Istruzioni copiate.')};
+// overlay (anteprima forma + riga in corso) e aggiornamenti
+const _d3=draw;let pend2=false;draw=function(){_d3();const extra=isStag()?cell/2:0;
+ if(shapeDrag){ctx.save();ctx.globalAlpha=.75;shapeCells(shapeDrag.a,shapeDrag.b,shapeType,$('shapeFill').checked).forEach(([r,c])=>{const off=isStag()&&r%2?cell/2:0;bPath(ctx,c*cell+off+cell/2,r*cell+cell/2,cell,cell);ctx.fillStyle=colors[selected][1]||'#ddd';ctx.fill();ctx.strokeStyle='#7952a5';ctx.lineWidth=1;ctx.stroke()});ctx.restore()}
+ if($('hlRow').checked&&!hlPeyote()){const r=(+$('curRow').value||1)-1;if(r>=0&&r<viewRows()){ctx.save();ctx.fillStyle='#ffd54a66';ctx.strokeStyle='#d99a00';ctx.lineWidth=2;ctx.fillRect(0,r*cell,viewCols()*cell+extra,cell);ctx.strokeRect(0,r*cell,viewCols()*cell+extra,cell);ctx.restore()}}
+ if(!pend2){pend2=true;requestAnimationFrame(()=>{pend2=false;updateInstr();updateMini()})}};
+// colori troppo simili nella legenda
+const _lh=legendHTML;legendHTML=function(){const u=[...new Set(data.flat().filter(v=>v>0))],w=[];for(let i=0;i<u.length;i++)for(let j=i+1;j<u.length;j++){const a=rgb(colors[u[i]][1]),b=rgb(colors[u[j]][1]);if(Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])<45)w.push('⚠ '+colors[u[i]][0]+' e '+colors[u[j]][0])}return _lh()+(w.length?'<div style="margin-top:6px;color:#a15c00"><b>Colori molto simili:</b><br>'+w.slice(0,6).join('<br>')+(w.length>6?'<br>…':'')+'<br>sulle perline reali si distinguono male.</div>':'')};
+// scorciatoie
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const k=e.key.toLowerCase(),m=e.ctrlKey||e.metaKey;
+ if(m&&k==='a'){e.preventDefault();selection={x:0,y:0,w:viewCols(),h:viewRows()};tool='select';setToolButtons();draw();return}
+ if(m||e.altKey)return;const map={b:()=>$('paint').click(),e:()=>$('erase').click(),s:()=>$('selectTool').click(),g:()=>$('fill').click(),i:()=>setT('pick'),l:()=>setT('shape','line'),r:()=>setT('shape','rect'),o:()=>setT('shape','ell'),x:()=>setT('replace'),t:()=>setT('shape','tri'),d:()=>setT('shape','rho'),h:()=>setT('shape','heart')};if(map[k])map[k]()});
+renderCol();setToolButtons();draw();
+})();
+
+/* ===== v5: progetti, PDF multipagina, sposta selezione ===== */
+(function(){
+const panel=document.querySelector('.panel');
+function mk(title,html){const d=document.createElement('details');d.className='group';d.innerHTML='<summary>'+title+'</summary>'+html;panel.append(d);return d}
+// progetti con nome
+const dp=mk('Progetti salvati','<label for="projName">Nome del progetto</label><input type="text" id="projName" placeholder="es. Bracciale lilla"><button class="btn primary" id="projSave" style="margin-top:7px">Salva nel browser</button><div id="projList" style="margin-top:9px"></div><div class="small">I progetti restano in questo browser. Per spostarli su un altro dispositivo usa “Salva schema”.</div>');
+const K='miyukiProj:';
+const snap=()=>JSON.stringify({app:'Miyuki Pattern Studio Plus',version:4,cols,rows,stitch,orientation,beadType,beadSize,sizeMode,data});
+function listProj(){const L=$('projList');L.innerHTML='';let ks=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith(K))ks.push(k.slice(K.length))}}catch(e){}ks.sort();if(!ks.length){L.innerHTML='<div class="small">Nessun progetto salvato.</div>';return}
+ ks.forEach(n=>{const r=document.createElement('div');r.style.cssText='display:flex;gap:5px;align-items:center;margin:4px 0';const t=document.createElement('span');t.textContent=n;t.style.cssText='flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';const a=document.createElement('button');a.className='btn';a.textContent='Apri';a.onclick=()=>{remember();$('file').onchange({target:{files:[new File([localStorage.getItem(K+n)],'p.json')]}});$('projName').value=n;toast('Aperto: '+n)};const d=document.createElement('button');d.className='btn';d.textContent='🗑';d.title='Elimina';d.onclick=()=>{if(confirm('Eliminare “'+n+'”?')){localStorage.removeItem(K+n);listProj()}};r.append(t,a,d);L.append(r)})}
+$('projSave').onclick=()=>{const n=$('projName').value.trim();if(!n){toast('Scrivi prima un nome.');return}if(localStorage.getItem(K+n)&&!confirm('Esiste già “'+n+'”. Sovrascrivere?'))return;try{localStorage.setItem(K+n,snap());toast('Salvato: '+n);listProj()}catch(e){toast('Impossibile salvare: spazio del browser esaurito o bloccato.')}};
+listProj();
+// PDF multipagina
+const lg=$('printPdf').parentElement;$('printPdf').insertAdjacentHTML('beforebegin','<div class="twocol" style="margin-top:8px"><div><label for="ppCols">Colonne per pagina</label><input type="number" id="ppCols" min="10" max="160" value="40"></div><div><label for="ppRows">Righe per pagina</label><input type="number" id="ppRows" min="5" max="80" value="40"></div></div>');
+$('printPdf').textContent='Stampa / PDF multipagina';
+$('printPdf').onclick=()=>{const w=window.open('');if(!w){toast('Il browser ha bloccato la finestra: consenti i popup.');return}
+ const vc=viewCols(),vr=viewRows(),pc=Math.max(10,Math.min(160,+$('ppCols').value||40)),pr=Math.max(5,Math.min(80,+$('ppRows').value||40)),ex=isStag()?cell/2:0,H=canvas.height;
+ const tiles=[];for(let r0=0;r0<vr;r0+=pr)for(let c0=0;c0<vc;c0+=pc)tiles.push([c0,Math.min(vc,c0+pc),r0,Math.min(vr,r0+pr)]);
+ let html='<title>Schema Miyuki</title><body style="font-family:sans-serif;margin:0"><style>.pg{padding:14px;page-break-after:always}img{max-width:100%}@page{margin:10mm}</style>';
+ tiles.forEach((t,i)=>{const [c0,c1,r0,r1]=t,x0=GM+c0*cell,wdt=(c1-c0)*cell+ex+1,y0=GM+Math.round(r0*cell*KY()),hgt=Math.round((r1-r0)*cell*KY())+1,tc=document.createElement('canvas');tc.width=GM+wdt;tc.height=GM+hgt;const g=tc.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,tc.width,tc.height);
+  g.drawImage(canvas,0,0,GM,GM,0,0,GM,GM);g.drawImage(canvas,x0,0,wdt,GM,GM,0,wdt,GM);g.drawImage(canvas,0,y0,GM,hgt,0,GM,GM,hgt);g.drawImage(canvas,x0,y0,wdt,hgt,GM,GM,wdt,hgt);
+  html+='<div class="pg"><h3>Schema Miyuki — pagina '+(i+1)+' di '+tiles.length+' <small style="font-weight:normal;color:#666">(colonne '+(c0+1)+'–'+c1+', righe '+(r0+1)+'–'+r1+')</small></h3><img src="'+tc.toDataURL('image/png')+'"></div>'});
+ html+='<div class="pg"><h3>Legenda perline</h3>'+legendHTML()+'</div><script>onload=()=>setTimeout(()=>print(),400)<\/script></body>';
+ w.document.write(html);w.document.close()};
+// sposta selezione trascinandola
+const box=canvas.parentElement;let mv=null;
+box.addEventListener('pointerdown',e=>{if(pan||e.target!==canvas||e.button!==0||tool!=='select'||!selection)return;const p=viewAt(e);
+ if(p.vr<selection.y||p.vr>=selection.y+selection.h||p.vc<selection.x||p.vc>=selection.x+selection.w)return;
+ e.stopPropagation();remember();const m=selectedMatrix(true);mv={matrix:m,info:{mirrorH:false,rowPar:m.map((_,i)=>(selection.y+i)%2)},dx:p.vc-selection.x,dy:p.vr-selection.y,w:selection.w,h:selection.h};
+ pastePreview={matrix:m,x:selection.x,y:selection.y,info:mv.info};canvas.setPointerCapture(e.pointerId);draw()},true);
+window.addEventListener('pointermove',e=>{if(!mv)return;const p=viewAt(e);clampPaste(p.vc-mv.dx,p.vr-mv.dy);draw()});
+window.addEventListener('pointerup',()=>{if(!mv)return;clampPaste(pastePreview.x,pastePreview.y);const {x,y}=pastePreview;commitMatrix(mv.matrix,y,x,mv.info);selection={x,y,w:mv.w,h:mv.h};pastePreview=null;mv=null;draw()});
+const hp=$('canvasHelp');const _s=setToolButtons;setToolButtons=function(){_s();if(tool==='select')hp.textContent='Trascina per selezionare. Trascina dentro la selezione per spostarla; oppure Copia/Specchio/Ruota e poi Incolla.'};
+setToolButtons();draw();
+})();
+
+/* ===== v6: inserimento immagine migliorato ===== */
+(function(){
+const dI=[...document.querySelectorAll('details.group')].find(d=>d.firstChild.textContent.startsWith('Inserisci'));
+$('placeImage').insertAdjacentHTML('beforebegin','<div class="inlinecheck"><input id="imgRatio" type="checkbox" checked><label for="imgRatio">Mantieni le proporzioni</label></div><div class="inlinecheck"><input id="imgDither" type="checkbox"><label for="imgDither">Sfumature (dithering)</label></div><label for="imgBr">Luminosità</label><input type="range" id="imgBr" min="-50" max="50" value="0"><label for="imgCt">Contrasto</label><input type="range" id="imgCt" min="-50" max="80" value="0"><label for="imgSa">Saturazione</label><input type="range" id="imgSa" min="-100" max="100" value="0"><canvas id="imgPrev" style="max-width:100%;background:#2b2233;border-radius:8px;margin-top:8px"></canvas><div class="small" id="imgInfo">Scegli o trascina un’immagine sulla griglia: vedrai qui l’anteprima.</div>');
+$('imageStatus').textContent='Puoi anche trascinare un’immagine direttamente sulla griglia. Regola dimensioni, colori e sfumature guardando l’anteprima, poi premi “Converti e posiziona” e clicca sulla griglia.';
+const PL=colors.map(c=>c[1]?lab(...rgb(c[1])):null);
+function lab(r,g,b){const f=v=>{v/=255;return v>.04045?((v+.055)/1.055)**2.4:v/12.92},R=f(r),G=f(g),B=f(b),t=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;const x=t((R*.4124+G*.3576+B*.1805)/.95047),y=t(R*.2126+G*.7152+B*.0722),z=t((R*.0193+G*.1192+B*.9505)/1.08883);return [116*y-16,500*(x-y),200*(y-z)]}
+const d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;
+function near(L,set){let b=set[0],bd=1e18;for(const i of set){const d=d2(L,PL[i]);if(d<bd){bd=d;b=i}}return b}
+function convert(){const img=getSource();if(!img)return null;const w=Math.max(1,Math.min(160,+$('imgW').value||1)),h=Math.max(1,Math.min(80,+$('imgH').value||1)),N=+$('imgColors').value,stag=isStag();
+ const t=document.createElement('canvas');t.width=w;t.height=h;const g=t.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';
+ if(!stag)g.drawImage(img,0,0,w,h);else for(let y=0;y<h;y++){g.save();g.beginPath();g.rect(0,y,w,1);g.clip();g.drawImage(img,y%2?-.5:0,0,w,h);g.restore()}
+ const id=g.getImageData(0,0,w,h).data,br=+$('imgBr').value*2.55,ct=1+$('imgCt').value/100,sa=1+$('imgSa').value/100,ign=$('transparentBg').checked,px=[];
+ for(let i=0;i<id.length;i+=4){let r=id[i],gg=id[i+1],b=id[i+2];if(id[i+3]<40||(ign&&r>238&&gg>238&&b>238)){px.push(null);continue}
+  r=(r-128)*ct+128+br;gg=(gg-128)*ct+128+br;b=(b-128)*ct+128+br;const y=.299*r+.587*gg+.114*b;r=y+(r-y)*sa;gg=y+(gg-y)*sa;b=y+(b-y)*sa;px.push([r,gg,b].map(v=>Math.max(0,Math.min(255,v))))}
+ const all=[];for(let i=1;i<colors.length;i++)all.push(i);const cnt={};
+ px.forEach(q=>{if(q){const k=near(lab(...q),all);cnt[k]=(cnt[k]||0)+1}});
+ let keep=Object.keys(cnt).map(Number);
+ while(keep.length>N){let bi=0,bc=1e18;keep.forEach((k,i)=>{let md=1e18,mk=k;keep.forEach(o=>{if(o!==k){const d=d2(PL[k],PL[o]);if(d<md){md=d;mk=o}}});const c=cnt[k]*Math.sqrt(md);if(c<bc){bc=c;bi=i;}});const k=keep[bi];let md=1e18,mk=keep[0];keep.forEach(o=>{if(o!==k){const d=d2(PL[k],PL[o]);if(d<md){md=d;mk=o}}});cnt[mk]+=cnt[k];keep.splice(bi,1)}
+ const out=Array.from({length:h},()=>Array(w).fill(null)),used=new Set(),dith=$('imgDither').checked,err=px.map(()=>[0,0,0]);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,q=px[i];if(!q||!keep.length)continue;const a=q.map((v,c)=>Math.max(0,Math.min(255,v+(dith?err[i][c]:0)))),k=near(lab(...a),keep);out[y][x]=k;used.add(k);
+  if(dith){const pr=rgb(colors[k][1]),e=a.map((v,c)=>v-pr[c]);[[1,0,7/16],[-1,1,3/16],[0,1,5/16],[1,1,1/16]].forEach(([dx,dy,wt])=>{const nx=x+dx,ny=y+dy;if(nx<0||nx>=w||ny>=h)return;const j=ny*w+nx;if(px[j])for(let c=0;c<3;c++)err[j][c]+=e[c]*wt})}}
+ return {matrix:out,used,w,h}}
+function preview(){const c=$('imgPrev'),r=convert();if(!r){c.width=c.height=0;return}const pc=Math.max(2,Math.min(8,Math.floor(260/(r.w+.5)))),x=c.getContext('2d'),pe=isStag();c.width=Math.round((r.w+(pe?.5:0))*pc);const ch=pc/pixAspect();c.height=Math.round(r.h*ch);x.fillStyle='#2b2233';x.fillRect(0,0,c.width,c.height);
+ r.matrix.forEach((row,y)=>row.forEach((k,xx)=>{if(!k)return;x.fillStyle=colors[k][1];bPath(x,(xx+(pe&&y%2?.5:0))*pc+pc/2,y*ch+ch/2,pc,ch);x.fill()}));
+ $('imgInfo').textContent=r.w+' × '+r.h+' perline, '+r.used.size+' colori usati, '+r.matrix.flat().filter(Boolean).length+' perline in totale.'}
+let tm=null;const sched=()=>{clearTimeout(tm);tm=setTimeout(preview,120)};
+const ratio=()=>{if(!loadedImage)return 1;const s=getSource();return (s.naturalHeight||s.height)/(s.naturalWidth||s.width)*pixAspect()};
+$('imgW').addEventListener('input',()=>{if($('imgRatio').checked&&loadedImage)$('imgH').value=Math.max(1,Math.min(80,Math.round($('imgW').value*ratio())));sched()});
+$('imgH').addEventListener('input',()=>{if($('imgRatio').checked&&loadedImage)$('imgW').value=Math.max(1,Math.min(160,Math.round($('imgH').value/ratio())));sched()});
+['imgColors','transparentBg','imgDither','imgBr','imgCt','imgSa','imgRatio','stitch'].forEach(id=>{$(id).addEventListener('input',sched);$(id).addEventListener('change',sched)});
+function loadFile(f){if(!f||!/^image\//.test(f.type)){toast('Il file non è un’immagine.');return}const im=new Image();im.onload=()=>{loadedImage=im;if($('imgRot')){$('imgRot').value=0;$('rotVal').textContent='0°'}const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,pa=pixAspect();let w=Math.min(viewCols(),160),h=w*pa*ih/iw;if(h>Math.min(viewRows(),80)){h=Math.min(viewRows(),80);w=h/(pa*ih/iw)}$('imgW').value=Math.max(1,Math.round(w));$('imgH').value=Math.max(1,Math.round(h));$('placeImage').disabled=false;dI.open=true;preview();toast('Immagine caricata.')};im.onerror=()=>toast('Impossibile leggere l’immagine.');im.src=URL.createObjectURL(f)}
+$('imageFile').onchange=e=>{loadFile(e.target.files[0])};
+const box=canvas.parentElement;box.addEventListener('dragover',e=>e.preventDefault());box.addEventListener('drop',e=>{e.preventDefault();loadFile(e.dataTransfer.files[0])});
+$('placeImage').onclick=()=>{if(!loadedImage)return;const r=convert();imageMatrix=r.matrix;imageInfo=isStag()?{mirrorH:false,rowPar:r.matrix.map((_,i)=>i%2)}:null;imageAnchor={x:0,y:0};tool='image';setToolButtons();$('imageStatus').textContent='Sposta il mouse sulla griglia e clicca per inserire l’immagine.';draw()};
+})();
+
+/* ===== v7: proporzioni reali delle perline e rotazione immagine ===== */
+// Dimensioni ufficiali Miyuki Delica [diametro, lunghezza] in mm; per le rotonde la lunghezza è stimata (~0,7 del diametro)
+const DELICA_MM={'15/0':[1.3,1.15],'11/0':[1.6,1.3],'10/0':[2.2,1.7],'8/0':[3.0,2.75]};
+function beadDims(){const m=$('beadProp')?$('beadProp').value:'auto';if(m==='square')return [1,1];if(m==='custom')return [Math.max(.1,+$('beadD').value||1),Math.max(.1,+$('beadL').value||1)];
+ if(beadType==='delica'&&DELICA_MM[beadSize])return DELICA_MM[beadSize];const d=(beadSpecs.round&&beadSpecs.round[beadSize])||2;return [d,d*.7]}
+// larghezza/altezza di una cella: nella riga la perlina occupa la sua lunghezza, tra le righe il suo diametro
+function pixAspect(){let [D,L]=beadDims();if($('beadSwap')&&$('beadSwap').checked)[D,L]=[L,D];return L/D}
+let rotCache={k:'',c:null};
+function getSource(){const im=loadedImage;if(!im)return null;const a=$('imgRot')?+$('imgRot').value:0;if(!a)return im;const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,k=Math.min(1,900/Math.max(iw,ih)),key=im.src+'|'+a+'|'+k;if(rotCache.k===key)return rotCache.c;
+ const r=a*Math.PI/180,cs=Math.abs(Math.cos(r)),sn=Math.abs(Math.sin(r)),w=Math.ceil((iw*cs+ih*sn)*k),h=Math.ceil((iw*sn+ih*cs)*k),c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.imageSmoothingQuality='high';g.translate(w/2,h/2);g.rotate(r);g.drawImage(im,-iw*k/2,-ih*k/2,iw*k,ih*k);rotCache={k:key,c};return c}
+(function(){
+$('imgPrev').insertAdjacentHTML('beforebegin','<label for="imgRot">Rotazione: <b id="rotVal">0°</b></label><input type="range" id="imgRot" min="-180" max="180" value="0"><div class="btnrow"><button class="btn" id="rotL">⟲ 90°</button><button class="btn" id="rotR">⟳ 90°</button><button class="btn" id="rotZero">0°</button></div><label for="beadProp" style="margin-top:8px">Proporzioni delle perline</label><select id="beadProp"><option value="auto">Reali (dal tipo di perlina)</option><option value="square">Quadrate (nessuna correzione)</option><option value="custom">Personalizzate</option></select><div class="twocol" id="beadCustom" style="display:none"><div><label for="beadD">Diametro (mm)</label><input type="number" id="beadD" step="0.05" min="0.1" value="1.6"></div><div><label for="beadL">Lunghezza (mm)</label><input type="number" id="beadL" step="0.05" min="0.1" value="1.3"></div></div><div class="inlinecheck"><input id="beadSwap" type="checkbox"><label for="beadSwap">Inverti larghezza e altezza</label></div><div class="small" id="beadInfo"></div>');
+const upd=()=>{$('beadCustom').style.display=$('beadProp').value==='custom'?'grid':'none';const [D,L]=beadDims(),sw=$('beadSwap').checked,pa=pixAspect();$('beadInfo').textContent='Perlina '+D+' × '+L+' mm (diametro × lunghezza): ogni cella è larga '+(sw?D:L)+' mm e alta '+(sw?L:D)+' mm (rapporto '+pa.toFixed(2)+'). L’anteprima è in scala reale.'};
+const refresh=()=>{upd();if(loadedImage)$('imgW').dispatchEvent(new Event('input'));draw()};
+['beadProp','beadD','beadL','beadSwap','beadType','beadSize','stitch'].forEach(id=>{$(id).addEventListener('input',refresh);$(id).addEventListener('change',refresh)});
+const setRot=v=>{v=((v+180)%360+360)%360-180;$('imgRot').value=v;$('rotVal').textContent=v+'°';$('imgW').dispatchEvent(new Event('input'));if(tool==='image'&&imageMatrix){const a={...imageAnchor};$('placeImage').click();imageAnchor=a;draw()}};
+$('imgRot').addEventListener('input',()=>setRot(+$('imgRot').value));$('rotL').onclick=()=>setRot(+$('imgRot').value-90);$('rotR').onclick=()=>setRot(+$('imgRot').value+90);$('rotZero').onclick=()=>setRot(0);
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||!loadedImage||tool!=='image')return;if(e.key==='['){e.preventDefault();setRot(+$('imgRot').value-90)}else if(e.key===']'){e.preventDefault();setRot(+$('imgRot').value+90)}});
+$('imageStatus').textContent+=' Durante il posizionamento puoi ruotare con i tasti [ e ].';
+upd();
+})();
+
+/* ===== v8: schema in scala reale ===== */
+// la cella è larga quanto la lunghezza della perlina e alta quanto il suo diametro: altezza = larghezza × (1/pixAspect)
+function KY(){const c=document.getElementById('scaleReal');return c&&c.checked?1/pixAspect():1}
+(function(){
+$('gridtoggle').insertAdjacentHTML('afterend','<label style="display:inline-flex;gap:4px;align-items:center;margin:0 0 0 4px;font-size:12.5px;white-space:nowrap" title="Disegna le celle con le proporzioni reali delle perline"><input type="checkbox" id="scaleReal" checked style="width:auto;margin:0"> Scala reale</label>');
+$('scaleReal').addEventListener('change',()=>{draw();toast($('scaleReal').checked?'Celle nelle proporzioni reali delle perline.':'Celle quadrate.')});
+// le proporzioni delle perline riguardano tutto lo schema: le sposto in "Dimensioni e disposizione"
+const dim=[...document.querySelectorAll('details.group')].find(d=>d.firstChild.textContent.startsWith('Dimensioni'));
+if(dim)dim.append(document.querySelector('label[for=beadProp]'),$('beadProp'),$('beadCustom'),$('beadSwap').parentElement,$('beadInfo'));
+$('beadInfo').textContent=$('beadInfo').textContent.replace('L’anteprima è in scala reale.','Schema e anteprime sono in scala reale.');
+draw();
+})();
+
+/* ===== v9: forma delle perline e guida peyote a colonne ===== */
+// Delica = cilindro: nello schema è un rettangolo arrotondato che riempie la cella; perline rotonde = ellisse
+function bPath(c,px,py,w,h){c.beginPath();if(beadType==='delica'){const x=px-w*.47,y=py-h*.47,rw=w*.94,rh=h*.94,r=Math.min(rw,rh)*.2;if(c.roundRect)c.roundRect(x,y,rw,rh,r);else c.rect(x,y,rw,rh)}else c.ellipse(px,py,w*.43,h*.41,0,0,Math.PI*2)}
+function bShine(c,px,py,cell){c.beginPath();if(beadType==='delica'){const x=px-cell*.36,y=py-cell*.36,w=cell*.16,h=cell*.72;if(c.roundRect)c.roundRect(x,y,w,h,w/2);else c.rect(x,y,w,h)}else c.ellipse(px-cell*.08,py-cell*.12,cell*.18,cell*.12,-.45,0,Math.PI*2)}
+// Peyote pari: la colonna 1 della griglia si infila intera (passaggi 1-2); poi ogni colonna richiede due passaggi:
+// prima le righe dispari dal basso verso l'alto, poi le pari dall'alto verso il basso. Passi: 1 = colonna 1; 2k = colonna k+1 (righe dispari); 2k+1 = colonna k+1 (righe pari)
+function stepMax(){return stitch==='peyote'?Math.max(1,2*viewCols()-1):viewRows()}
+function peyoteStep(s){const R=viewRows();if(s<=1)return {col:0,rows:[...Array(R).keys()],pass:'1-2',dir:'↓ dall’alto verso il basso (si infila tutta la colonna)'};
+ const k=Math.floor(s/2),rows=[];if(s%2===0){for(let r=(R%2===0?R-2:R-1);r>=0;r-=2)rows.push(r);return {col:k,rows,pass:String(s+1),dir:'↑ dal basso verso l’alto'}}
+ for(let r=1;r<R;r+=2)rows.push(r);return {col:k,rows,pass:String(s+1),dir:'↓ dall’alto verso il basso'}}
+function peyoteInstr(){const R=viewRows(),o=['PEYOTE: si lavora per COLONNE della griglia, a zig-zag, non riga per riga.','La colonna 1 si infila tutta insieme (passaggi 1-2). Ogni colonna successiva richiede 2 passaggi:','prima le righe dispari dal basso verso l’alto, poi le righe pari dall’alto verso il basso.'];
+ if(R%2)o.push('ATTENZIONE: il disegno ha un numero DISPARI di righe (peyote dispari): al bordo serve il giro di volta, qui non descritto nel dettaglio.');o.push('');
+ for(let s=1;s<=stepMax();s++){const st=peyoteStep(s),runs=[];let prev=null,n=0;const fl=()=>{if(prev!==null)runs.push(n+'× '+(prev===0?'vuota':colors[prev][0]))};
+  st.rows.forEach(r=>{const d=dataCoord(r,st.col),v=data[d.r][d.c];if(v===prev)n++;else{fl();prev=v;n=1}});fl();
+  const a=st.rows[0]+1,b=st.rows[st.rows.length-1]+1;o.push('Colonna '+(st.col+1)+' · passaggio '+st.pass+' · '+st.dir+' · righe '+a+'→'+b+(s>1?' (una sì e una no)':'')+': '+runs.join(', '))}
+ return o.join('\n')}
+function hlPeyote(){if(stitch!=='peyote')return false;const s=Math.max(1,Math.min(stepMax(),+$('curRow').value||1)),st=peyoteStep(s);ctx.save();ctx.fillStyle='#ffd54a88';ctx.strokeStyle='#d99a00';ctx.lineWidth=2;st.rows.forEach(r=>{const x=st.col*cell+(r%2?cell/2:0),y=r*cell;ctx.fillRect(x,y,cell,cell);ctx.strokeRect(x,y,cell,cell)});ctx.restore();return true}
+(function(){
+const sm=[...document.querySelectorAll('details.group>summary')].find(e=>e.textContent.startsWith('Istruzioni'));if(sm)sm.textContent='Guida passo passo';
+$('curRow').parentElement.insertAdjacentHTML('afterend','<div class="small" id="stepInfo" style="margin-top:6px"></div>');
+$('curRow').parentElement.querySelector('label').lastChild.textContent=' evidenzia';
+function upd(){const m=stepMax();$('curRow').max=m;if(+$('curRow').value>m)$('curRow').value=m;const v=Math.max(1,+$('curRow').value||1);
+ $('stepInfo').textContent=stitch==='peyote'?(()=>{const st=peyoteStep(v);return 'Colonna '+(st.col+1)+' · passaggio '+st.pass+' di '+(2*viewCols())+': '+st.dir+' ('+st.rows.length+' perline). I passaggi vanno in zig-zag lungo le colonne.'})():'Riga '+v+' di '+viewRows()+'.'}
+const _d9=draw;draw=function(){_d9();upd()};$('curRow').addEventListener('input',()=>draw());$('hlRow').addEventListener('change',()=>draw());upd();draw();
+})();
+
+/* ===== v10: triangolo, rombo, cuore (calcolati sulle posizioni fisiche delle perline) ===== */
+let _heartB=null;
+function heartBounds(){if(_heartB)return _heartB;let xm=0,yM=-9,ym=9;const f=(x,y)=>(x*x+y*y-1)**3-x*x*y**3;for(let x=-1.6;x<=1.6;x+=.01)for(let y=-1.6;y<=1.6;y+=.01)if(f(x,y)<=0){xm=Math.max(xm,Math.abs(x));yM=Math.max(yM,y);ym=Math.min(ym,y)}return _heartB={xm,yM,ym}}
+function shapeCellsX(a,b,type,fill){
+ const pa=pixAspect(),st=isStag(),x0=Math.min(a.vc,b.vc),x1=Math.max(a.vc,b.vc),y0=Math.min(a.vr,b.vr),y1=Math.max(a.vr,b.vr),flip=type==='tri'&&b.vr<a.vr;
+ const twoA=x0+x1+1+(st?1:0),X0=x0*pa,X1=(twoA-x0)*pa,Y0=y0,Y1=y1+1,cx=(X0+X1)/2,cy=(Y0+Y1)/2,hw=Math.max(1e-6,(X1-X0)/2),hh=Math.max(1e-6,(Y1-Y0)/2),hb=type==='heart'?heartBounds():null;
+ const inside=(X,Y)=>{if(X<X0-1e-9||X>X1+1e-9||Y<Y0-1e-9||Y>Y1+1e-9)return false;const u=(X-cx)/hw,v=(Y-cy)/hh;
+  if(type==='rho')return Math.abs(u)+Math.abs(v)<=1;
+  if(type==='tri'){const t=flip?(Y1-Y)/(Y1-Y0):(Y-Y0)/(Y1-Y0);return Math.abs(u)<=t}
+  const hx=u*hb.xm,hy=hb.yM-((Y-Y0)/(Y1-Y0))*(hb.yM-hb.ym);return (hx*hx+hy*hy-1)**3-hx*hx*hy**3<=0};
+ const out=[];for(let r=y0;r<=y1;r++){const off=st&&r%2?.5:0;for(let c=x0-1;c<=x1+1;c++){if(c<0||c>=viewCols())continue;const X=(c+off+.5)*pa,Y=r+.5;if(!inside(X,Y))continue;
+  if(!fill){const nb=st?[[X-pa,Y],[X+pa,Y],[X-pa/2,Y-1],[X+pa/2,Y-1],[X-pa/2,Y+1],[X+pa/2,Y+1]]:[[X-pa,Y],[X+pa,Y],[X,Y-1],[X,Y+1]];if(nb.every(q=>inside(q[0],q[1])))continue}
+  out.push([r,c])}}
+ return out.length?out:[[a.vr,a.vc]]}
+
+/* ===== v12: uso da smartphone/tablet (iPhone e web) ===== */
+(function(){
+const mobile=()=>matchMedia('(max-width:900px)').matches,panel=document.querySelector('.panel'),box=canvas.parentElement,tb=$('toolbar');
+const sc=document.createElement('div');sc.id='toolscroll';[...tb.children].filter(e=>e.id!=='colrow').forEach(e=>sc.appendChild(e));tb.appendChild(sc);
+const fab=document.createElement('button'),back=document.createElement('div');fab.id='drawerBtn';fab.textContent='☰ Strumenti';back.id='drawerBack';document.body.append(back,fab);
+const setDrawer=o=>{panel.classList.toggle('open',o);back.classList.toggle('show',o);fab.textContent=o?'✕ Chiudi':'☰ Strumenti'};
+fab.onclick=()=>setDrawer(!panel.classList.contains('open'));back.onclick=()=>setDrawer(false);
+$('palette').addEventListener('click',()=>{if(mobile())setDrawer(false)});
+const pb=document.createElement('button');pb.className='btn tbb';pb.textContent='🎨';pb.title='Palette completa';pb.onclick=()=>setDrawer(true);$('colrow').prepend(pb);
+addEventListener('resize',()=>{if(!mobile())setDrawer(false)});
+let pend=null,replaying=false,gest=null,suppress=false;const touches=new Map();
+const info=e=>({x:e.clientX,y:e.clientY,id:e.pointerId});
+const fire=(type,o)=>{replaying=true;canvas.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,clientX:o.x,clientY:o.y,pointerId:o.id,pointerType:'touch',isPrimary:true,button:0,buttons:type==='pointerup'?0:1}));replaying=false};
+const flush=()=>{if(pend&&pend.mode==='draw'){clearTimeout(pend.t);const o=pend.ev;pend=null;fire('pointerdown',o)}};
+const dist=a=>Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),cen=a=>({x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2});
+box.addEventListener('pointerdown',e=>{if(replaying||window.__guide||e.pointerType!=='touch')return;touches.set(e.pointerId,info(e));
+ if(touches.size>=2){if(pend){clearTimeout(pend.t);pend=null}
+  if(!gest){gest={d0:dist([...touches.values()]),cell0:cell,last:cen([...touches.values()])};suppress=true}e.stopPropagation();return}
+ if(pan||e.target!==canvas)return;e.stopPropagation();const ev=info(e);
+ if(tool==='paste'||tool==='image'){pend={mode:'place',ev};canvas.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,clientX:ev.x,clientY:ev.y,pointerId:ev.id,pointerType:'touch'}));return}
+ pend={mode:'draw',ev,t:setTimeout(flush,70)}},true);
+window.addEventListener('pointermove',e=>{if(e.pointerType!=='touch')return;if(touches.has(e.pointerId))touches.set(e.pointerId,info(e));
+ if(gest&&touches.size>=2){const pts=[...touches.values()].slice(0,2),d=dist(pts),c=cen(pts),nc=Math.max(10,Math.min(36,Math.round(gest.cell0*d/gest.d0))),r=box.getBoundingClientRect();
+  if(nc!==cell){const k=nc/cell,rx=c.x-r.left,ry=c.y-r.top;box.scrollLeft=(box.scrollLeft+rx)*k-rx;box.scrollTop=(box.scrollTop+ry)*k-ry;cell=nc;draw()}
+  box.scrollLeft-=c.x-gest.last.x;box.scrollTop-=c.y-gest.last.y;gest.last=c;e.stopPropagation();e.preventDefault();return}
+ if(suppress){e.stopPropagation();return}
+ if(pend&&pend.mode==='draw'&&!replaying)flush()},true);
+const up=e=>{if(e.pointerType!=='touch')return;
+ if(!suppress&&pend&&!replaying){if(pend.mode==='draw')flush();else{const o=info(e);pend=null;fire('pointerdown',o)}}
+ touches.delete(e.pointerId);if(touches.size<2)gest=null;if(touches.size===0)suppress=false;
+ if(suppress)e.stopPropagation()};
+window.addEventListener('pointerup',up,true);window.addEventListener('pointercancel',e=>{pend&&clearTimeout(pend.t);pend=null;up(e)},true);
+$('canvasHelp').textContent+=' Su touch: un dito disegna, due dita ingrandiscono e spostano la vista.';
+})();
+
+/* ===== v13: guida interattiva ===== */
+(function(){
+const GK='miyukiGuide:',box=canvas.parentElement,panelEl=document.querySelector('.panel');
+let gStep=1,savedStep=0,done=new Set(),wl=null,g3d=true;try{g3d=localStorage.getItem('miyukiGuide3d')!=='0'}catch(e){}
+const bar=document.createElement('div');bar.id='gbar';
+bar.innerHTML='<div class="gin"><div class="grow1"><button id="gCount" class="gcount" title="Tocca per andare a un passo preciso"></button><div class="gprog"><i id="gProgI"></i></div><button id="g3d" class="gb" style="min-height:40px;padding:0 12px" title="Perline in 3D / piatte">3D</button><button id="gExit" class="gb" style="min-height:40px;padding:0 14px" title="Esci dalla guida">✕</button></div><div id="gDesc" class="gdesc"></div><div id="gChips" class="gchips"></div><div class="gnav"><button id="gPrev" class="gb big">‹ Indietro</button><button id="gNext" class="gb big pri">Avanti ›</button></div><div class="gtools"><button id="gSave" class="gb">💾 Salva</button><button id="gRestart" class="gb">↺ Da capo</button><button id="gZm" class="gb" title="Riduci">−</button><button id="gZp" class="gb" title="Ingrandisci">+</button></div></div>';
+document.body.append(bar);
+const total=()=>stepMax();
+function cellsOf(s){if(stitch==='peyote'){const st=peyoteStep(s);return st.rows.map(r=>[r,st.col])}const r=s-1;return Array.from({length:viewCols()},(_,c)=>[r,c])}
+function stepOf(r,c){if(stitch==='peyote')return c===0?1:(r%2===0?2*c:2*c+1);return r+1}
+function runsOf(s){const out=[];let prev=null,n=0;cellsOf(s).forEach(([r,c])=>{const d=dataCoord(r,c),v=data[d.r][d.c];if(v===prev)n++;else{if(prev!==null)out.push([prev,n]);prev=v;n=1}});if(prev!==null)out.push([prev,n]);return out}
+function descOf(s){if(stitch==='peyote'){const st=peyoteStep(s);return 'Colonna '+(st.col+1)+' · '+st.dir+(s>1?' · una perlina sì e una no':'')}return 'Riga '+s+' · da sinistra a destra'}
+function sig(){let h=5381;const t=JSON.stringify([cols,rows,stitch,orientation,data]);for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)}
+function layout(){const h=window.visualViewport?visualViewport.height:innerHeight,bh=bar.offsetHeight;document.body.style.paddingBottom=bh+'px';box.style.maxHeight=Math.max(180,h-bh-16)+'px'}
+function focusStep(smooth){const rect=canvas.getBoundingClientRect(),k=rect.width/canvas.width,st=isStag(),cl=cellsOf(gStep),[r0,c0]=cl[0],ky=KY();
+ const px=(r,c)=>[(GM+c*cell+(st&&r%2?cell/2:0)+cell/2)*k,(GM+(r*cell+cell/2)*ky)*k];
+ let L=box.scrollLeft,T=box.scrollTop;
+ if(stitch==='peyote'){const [x,y]=px(r0,c0);L=x-box.clientWidth/2;if(canvas.height*k>box.clientHeight)T=y-box.clientHeight/2}
+ else{const [,y]=px(r0,0);T=y-box.clientHeight/2;L=0}
+ box.scrollTo({left:Math.max(0,L),top:Math.max(0,T),behavior:smooth?'smooth':'auto'})}
+function render(smooth){const T=total();gStep=Math.max(1,Math.min(T,gStep));
+ $('gCount').textContent='Passo '+gStep+' di '+T;$('gProgI').style.width=(gStep/T*100)+'%';
+ $('gDesc').textContent=descOf(gStep)+' · '+cellsOf(gStep).length+' perline';
+ const ch=$('gChips');ch.innerHTML='';runsOf(gStep).forEach(([v,n],i)=>{const b=document.createElement('button');b.className='gchip'+(done.has(i)?' ok':'');b.title='Tocca per segnare come infilato';
+  b.innerHTML='<i style="background:'+(v===0?'repeating-conic-gradient(#ddd 0% 25%,#fff 0% 50%) 50%/8px 8px':colors[v][1])+'"></i><b>'+n+'×</b> '+(v===0?'vuota':colors[v][0]);
+  b.onclick=()=>{done.has(i)?done.delete(i):done.add(i);b.classList.toggle('ok')};ch.append(b)});
+ $('gPrev').disabled=gStep<=1;$('gNext').textContent=gStep>=T?'Fine ✓':'Avanti ›';$('gSave').textContent=savedStep===gStep?'💾 Salvato ✓':'💾 Salva';
+ $('curRow').value=gStep;draw();layout();focusStep(smooth)}
+function go(n,smooth=true){gStep=n;done=new Set();render(smooth)}
+function save(){try{const sg=sig(),rec={step:gStep,ts:Date.now()};localStorage.setItem(GK+sg,JSON.stringify(rec));localStorage.setItem(GK+'last',JSON.stringify({step:gStep,cols,rows,stitch,sig:sg,ts:rec.ts}));savedStep=gStep;$('gSave').textContent='💾 Salvato ✓';toast('Avanzamento salvato: passo '+gStep+'.')}catch(e){toast('Impossibile salvare: archiviazione del browser non disponibile.')}}
+async function wlOn(){try{if(navigator.wakeLock&&window.__guide)wl=await navigator.wakeLock.request('screen')}catch(e){}}
+function wlOff(){try{wl&&wl.release()}catch(e){}wl=null}
+function start(){if(!data.flat().some(v=>v>0)){toast('Disegna prima lo schema.');return}
+ tool='paint';pastePreview=null;selection=null;$('hlRow').checked=false;setToolButtons();panelEl.classList.remove('open');const bk=$('drawerBack');if(bk)bk.classList.remove('show');
+ let step=1;savedStep=0;
+ try{const r=JSON.parse(localStorage.getItem(GK+sig())||'null');if(r){step=r.step;savedStep=r.step;toast('Ripreso dal passo '+r.step+'.')}else{const l=JSON.parse(localStorage.getItem(GK+'last')||'null');if(l&&l.cols===cols&&l.rows===rows&&l.stitch===stitch&&confirm('Lo schema è stato modificato dall’ultimo salvataggio. Riprendere dal passo '+l.step+'?'))step=l.step}}catch(e){}
+ window.__guide=true;document.body.classList.add('guide');$('g3d').classList.toggle('pri',g3d);canvas.style.touchAction='pan-x pan-y';wlOn();
+ gStep=Math.min(step,total());done=new Set();layout();window.scrollTo({top:Math.max(0,box.getBoundingClientRect().top+scrollY-8)});render(false)}
+function stop(){if(gStep>1&&savedStep!==gStep&&!confirm('Uscire senza salvare l’avanzamento (passo '+gStep+')?'))return;
+ window.__guide=false;document.body.classList.remove('guide');canvas.style.touchAction='none';box.style.maxHeight='';document.body.style.paddingBottom='';wlOff();draw()}
+// il disegno è bloccato mentre la guida è attiva (la griglia serve solo per guardare e scorrere)
+document.addEventListener('pointerdown',e=>{if(window.__guide&&box.contains(e.target))e.stopPropagation()},true);
+$('gNext').onclick=()=>{if(gStep>=total()){toast('Schema completato! 🎉');return}go(gStep+1)};$('gPrev').onclick=()=>go(gStep-1);
+$('gSave').onclick=save;$('gExit').onclick=stop;
+$('gRestart').onclick=()=>{if(confirm('Ricominciare dal passo 1? Il salvataggio resta com’è finché non salvi di nuovo.'))go(1)};
+$('gCount').onclick=()=>{const v=prompt('Vai al passo (1–'+total()+')',gStep),n=parseInt(v,10);if(v===null)return;n>=1&&n<=total()?go(n):toast('Numero non valido.')};
+const zoom=d=>{cell=Math.max(10,Math.min(36,cell+d));draw();focusStep(false)};$('gZm').onclick=()=>zoom(-2);$('gZp').onclick=()=>zoom(2);
+document.addEventListener('keydown',e=>{if(!window.__guide||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();$('gNext').click()}else if(e.key==='ArrowLeft'){e.preventDefault();if(gStep>1)go(gStep-1)}else if(e.key==='Escape')stop()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&window.__guide)wlOn()});
+addEventListener('resize',()=>{if(window.__guide){layout();focusStep(false)}});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(window.__guide)layout()});
+// evidenziazione sulla griglia: i colori restano visibili, il passo attuale è racchiuso in un contorno; resto attenuato; prima perlina cerchiata in rosso
+const spr=new Map(),mixc=(c,t,a)=>c.map((v,i)=>Math.round(v+(t[i]-v)*a)),css=c=>'rgb('+c.join(',')+')';
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function sprite(idx){const sw=Math.max(8,Math.round(cell*2)),sh=Math.max(8,Math.round(cell*KY()*2)),key=idx+'|'+beadType+'|'+sw+'x'+sh;let c=spr.get(key);if(c)return c;if(spr.size>400)spr.clear();
+ c=document.createElement('canvas');c.width=sw;c.height=sh;const g=c.getContext('2d'),base=rgb(colors[idx][1]);
+ if(beadType==='delica'){const x=sw*.03,y=sh*.03,w=sw*.94,h=sh*.94,r=Math.min(w,h)*.22;
+  // cilindro in piedi: la luce cambia da sinistra a destra
+  const gv=g.createLinearGradient(x,0,x+w,0);gv.addColorStop(0,css(mixc(base,[255,255,255],.38)));gv.addColorStop(.25,css(mixc(base,[255,255,255],.1)));gv.addColorStop(.62,css(base));gv.addColorStop(1,css(mixc(base,[0,0,0],.4)));
+  rr(g,x,y,w,h,r);g.fillStyle=gv;g.fill();
+  // estremità superiore e inferiore più scure (bordi del foro)
+  g.save();rr(g,x,y,w,h,r);g.clip();const gh=g.createLinearGradient(0,y,0,y+h);gh.addColorStop(0,'rgba(0,0,0,.3)');gh.addColorStop(.14,'rgba(0,0,0,0)');gh.addColorStop(.86,'rgba(0,0,0,0)');gh.addColorStop(1,'rgba(0,0,0,.3)');g.fillStyle=gh;g.fillRect(x,y,w,h);g.restore();
+  // riflesso lucido lungo il fianco sinistro
+  const hw=w*.2;rr(g,x+w*.13,y+h*.14,hw,h*.62,hw/2);const gs=g.createLinearGradient(0,y,0,y+h);gs.addColorStop(0,'rgba(255,255,255,0)');gs.addColorStop(.25,'rgba(255,255,255,.7)');gs.addColorStop(1,'rgba(255,255,255,.08)');g.fillStyle=gs;g.fill();
+  rr(g,x,y,w,h,r);g.strokeStyle='rgba(0,0,0,.28)';g.lineWidth=Math.max(1,sw*.04);g.stroke()} else{const cx=sw/2,cy=sh/2,rx=sw*.46,ry=sh*.44,gr=g.createRadialGradient(cx-rx*.35,cy-ry*.4,rx*.08,cx,cy,rx*1.15);gr.addColorStop(0,css(mixc(base,[255,255,255],.55)));gr.addColorStop(.45,css(base));gr.addColorStop(1,css(mixc(base,[0,0,0],.5)));
+  g.beginPath();g.ellipse(cx,cy,rx,ry,0,0,7);g.fillStyle=gr;g.fill();g.strokeStyle='rgba(0,0,0,.25)';g.lineWidth=Math.max(1,sw*.04);g.stroke();
+  g.beginPath();g.ellipse(cx-rx*.3,cy-ry*.42,rx*.22,ry*.12,-.5,0,7);g.fillStyle='rgba(255,255,255,.7)';g.fill()}
+ spr.set(key,c);return c}
+const _dg=draw;draw=function(){_dg();if(!window.__guide)return;const R=viewRows(),C=viewCols(),st=isStag(),X=(r,c)=>c*cell+(st&&r%2?cell/2:0);
+ ctx.save();
+ if(g3d)for(let r=0;r<R;r++)for(let c=0;c<C;c++){const d=dataCoord(r,c),v=data[d.r][d.c];if(v>0)ctx.drawImage(sprite(v),X(r,c),r*cell,cell,cell)}
+ ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();for(let r=0;r<R;r++)for(let c=0;c<C;c++)if(stepOf(r,c)>gStep)ctx.rect(X(r,c),r*cell,cell,cell);ctx.fill();
+ const cl=cellsOf(gStep),ring=(r,c,i)=>rr(ctx,X(r,c)+i,r*cell+i,cell-2*i,cell-2*i,cell*.2);ctx.lineJoin='round';
+ ctx.strokeStyle='#2b2233';ctx.lineWidth=4;cl.forEach(([r,c])=>{ring(r,c,1.5);ctx.stroke()});
+ ctx.strokeStyle='#ffd54a';ctx.lineWidth=2;cl.forEach(([r,c])=>{ring(r,c,1.5);ctx.stroke()});
+ const [r0,c0]=cl[0];ring(r0,c0,.5);ctx.strokeStyle='#e5322d';ctx.lineWidth=3;ctx.stroke();ctx.restore()};
+$('g3d').onclick=()=>{g3d=!g3d;try{localStorage.setItem('miyukiGuide3d',g3d?'1':'0')}catch(e){}$('g3d').classList.toggle('pri',g3d);draw()};
+// punti di accesso
+const gb=document.createElement('button');gb.className='btn tbb';gb.id='gToolBtn';gb.textContent='▶ Guida';gb.title='Guida passo passo interattiva';gb.onclick=start;$('toolscroll').prepend(gb);
+const sm=[...document.querySelectorAll('details.group>summary')].find(e=>e.textContent.startsWith('Guida passo passo'));
+if(sm)sm.insertAdjacentHTML('afterend','<button class="btn primary" id="gStart" style="width:100%;margin:6px 0 10px;min-height:44px">▶ Avvia guida interattiva</button>');if($('gStart'))$('gStart').onclick=start;
+})();
+</script></body></html>
