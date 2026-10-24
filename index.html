@@ -245,7 +245,11 @@ $('fill').after(...nb,fl);
 const help={shape:'Trascina sulla griglia per tracciare la forma (spunta “pieno” per riempirla).',pick:'Clicca una perlina per prenderne il colore.',replace:'Clicca una perlina: il suo colore verrà sostituito ovunque con il colore attivo.'};
 const _stb=setToolButtons;setToolButtons=function(){_stb();const m={pickBtn:tool==='pick',lineBtn:tool==='shape'&&shapeType==='line',rectBtn:tool==='shape'&&shapeType==='rect',ellBtn:tool==='shape'&&shapeType==='ell',triBtn:tool==='shape'&&shapeType==='tri',rhoBtn:tool==='shape'&&shapeType==='rho',hrtBtn:tool==='shape'&&shapeType==='heart',replBtn:tool==='replace'};for(const k in m)$(k).classList.toggle('primary',m[k]);if(help[tool])$('canvasHelp').textContent=help[tool]};
 // forme
-function shapeCells(a,b,type,fill){if(type==='tri'||type==='rho'||type==='heart')return shapeCellsX(a,b,type,fill);const x0=Math.min(a.vc,b.vc),x1=Math.max(a.vc,b.vc),y0=Math.min(a.vr,b.vr),y1=Math.max(a.vr,b.vr),out=[];
+function lineP(a,b){const pa=pixAspect(),st=isStag(),P=(r,c)=>[(c+(st&&r%2?.5:0)+.5)*pa,r+.5],A=P(a.vr,a.vc),B=P(b.vr,b.vc),dx=B[0]-A[0],dy=B[1]-A[1],n=Math.max(1,Math.ceil(Math.hypot(dx,dy)*4)),out=[],seen=new Set();
+ const add=(r,c)=>{const k=r+','+c;if(!seen.has(k)){seen.add(k);out.push([r,c])}};add(a.vr,a.vc);
+ for(let i=1;i<=n;i++){const X=A[0]+dx*i/n,Y=A[1]+dy*i/n,r=Math.floor(Y),off=st&&r%2?.5:0;add(r,Math.round(X/pa-.5-off))}
+ add(b.vr,b.vc);return out}
+function shapeCells(a,b,type,fill){if(type==='tri'||type==='rho'||type==='heart'||type==='ell')return shapeCellsX(a,b,type,fill);if(type==='line')return lineP(a,b);const x0=Math.min(a.vc,b.vc),x1=Math.max(a.vc,b.vc),y0=Math.min(a.vr,b.vr),y1=Math.max(a.vr,b.vr),out=[];
  if(type==='line'){let x=a.vc,y=a.vr;const dx=Math.abs(b.vc-x),dy=-Math.abs(b.vr-y),sx=x<b.vc?1:-1,sy=y<b.vr?1:-1;let e=dx+dy;for(;;){out.push([y,x]);if(x===b.vc&&y===b.vr)break;const e2=2*e;if(e2>=dy){e+=dy;x+=sx}if(e2<=dx){e+=dx;y+=sy}}}
  else if(type==='rect'){for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(fill||y===y0||y===y1||x===x0||x===x1)out.push([y,x])}
  else{const cx=(x0+x1)/2,cy=(y0+y1)/2,rx=(x1-x0)/2+.5,ry=(y1-y0)/2+.5,In=(x,y)=>((x-cx)/rx)**2+((y-cy)/ry)**2<=1;for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(In(x,y)&&(fill||!(In(x+1,y)&&In(x-1,y)&&In(x,y+1)&&In(x,y-1))))out.push([y,x])}
@@ -422,13 +426,14 @@ const _d9=draw;draw=function(){_d9();upd()};$('curRow').addEventListener('input'
 /* ===== v10: triangolo, rombo, cuore (calcolati sulle posizioni fisiche delle perline) ===== */
 let _heartB=null;
 function heartBounds(){if(_heartB)return _heartB;let xm=0,yM=-9,ym=9;const f=(x,y)=>(x*x+y*y-1)**3-x*x*y**3;for(let x=-1.6;x<=1.6;x+=.01)for(let y=-1.6;y<=1.6;y+=.01)if(f(x,y)<=0){xm=Math.max(xm,Math.abs(x));yM=Math.max(yM,y);ym=Math.min(ym,y)}return _heartB={xm,yM,ym}}
-function shapeCellsX(a,b,type,fill){
+function shapeCellsX(a,b,type,fill,tf){tf=tf||{};
  const pa=pixAspect(),st=isStag(),x0=Math.min(a.vc,b.vc),x1=Math.max(a.vc,b.vc),y0=Math.min(a.vr,b.vr),y1=Math.max(a.vr,b.vr),flip=type==='tri'&&b.vr<a.vr;
  const twoA=x0+x1+1+(st?1:0),X0=x0*pa,X1=(twoA-x0)*pa,Y0=y0,Y1=y1+1,cx=(X0+X1)/2,cy=(Y0+Y1)/2,hw=Math.max(1e-6,(X1-X0)/2),hh=Math.max(1e-6,(Y1-Y0)/2),hb=type==='heart'?heartBounds():null;
- const inside=(X,Y)=>{if(X<X0-1e-9||X>X1+1e-9||Y<Y0-1e-9||Y>Y1+1e-9)return false;const u=(X-cx)/hw,v=(Y-cy)/hh;
+ const inside=(X,Y)=>{if(X<X0-1e-9||X>X1+1e-9||Y<Y0-1e-9||Y>Y1+1e-9)return false;let u=(X-cx)/hw,v=(Y-cy)/hh;if(tf.fv)v=-v;if(tf.fm)u=-u;for(let k=0;k<((tf.rot||0)%4);k++){const q=u;u=v;v=-q}
+  if(type==='ell')return u*u+v*v<=1;
   if(type==='rho')return Math.abs(u)+Math.abs(v)<=1;
-  if(type==='tri'){const t=flip?(Y1-Y)/(Y1-Y0):(Y-Y0)/(Y1-Y0);return Math.abs(u)<=t}
-  const hx=u*hb.xm,hy=hb.yM-((Y-Y0)/(Y1-Y0))*(hb.yM-hb.ym);return (hx*hx+hy*hy-1)**3-hx*hx*hy**3<=0};
+  if(type==='tri'){const t=flip?(1-v)/2:(v+1)/2;return Math.abs(u)<=t}
+  const hx=u*hb.xm,hy=hb.yM-((v+1)/2)*(hb.yM-hb.ym);return (hx*hx+hy*hy-1)**3-hx*hx*hy**3<=0};
  const out=[];for(let r=y0;r<=y1;r++){const off=st&&r%2?.5:0;for(let c=x0-1;c<=x1+1;c++){if(c<0||c>=viewCols())continue;const X=(c+off+.5)*pa,Y=r+.5;if(!inside(X,Y))continue;
   if(!fill){const nb=st?[[X-pa,Y],[X+pa,Y],[X-pa/2,Y-1],[X+pa/2,Y-1],[X-pa/2,Y+1],[X+pa/2,Y+1]]:[[X-pa,Y],[X+pa,Y],[X,Y-1],[X,Y+1]];if(nb.every(q=>inside(q[0],q[1])))continue}
   out.push([r,c])}}
@@ -574,15 +579,15 @@ const css=document.createElement('style');css.textContent=`
 const mkDetails=(title,html)=>{const d=document.createElement('details');d.className='group';d.innerHTML='<summary>'+title+'</summary>'+html;return d};
 
 /* ---------- LIVELLI ---------- */
-let layers=[{id:1,name:'Livello 1',visible:true,cells:data.map(r=>r.slice())}],activeIdx=0,layerSeq=1,prevComp=data.map(r=>r.slice());
+let layers=[{id:1,name:'Livello 1',visible:true,shapes:[],cells:data.map(r=>r.slice())}],activeIdx=0,layerSeq=1,prevComp=data.map(r=>r.slice());
 const grid=(R,C)=>Array.from({length:R},()=>Array(C).fill(0));
-const cloneL=L=>L.map(l=>({id:l.id,name:l.name,visible:l.visible,cells:l.cells.map(r=>r.slice())}));
+const cloneL=L=>L.map(l=>({id:l.id,name:l.name,visible:l.visible,shapes:(l.shapes||[]).slice(),cells:l.cells.map(r=>r.slice())}));
 const fitG=(g,R,C)=>Array.from({length:R},(_,r)=>Array.from({length:C},(_,c)=>(g[r]&&g[r][c])||0));
 function composite(){const R=layers[0].cells.length,C=R?layers[0].cells[0].length:0,out=grid(R,C);for(let r=0;r<R;r++)for(let c=0;c<C;c++)for(let k=layers.length-1;k>=0;k--){const L=layers[k];if(!L.visible)continue;const v=L.cells[r][c];if(v>0){out[r][c]=v;break}}return out}
 function reconcile(){
  const R=data.length,C=R?data[0].length:0;
- if(window.__clearAll){window.__clearAll=false;layers.forEach(l=>l.cells=grid(R,C))}
- if(layers[0].cells.length!==R||(layers[0].cells[0]||[]).length!==C){layers.forEach(l=>l.cells=fitG(l.cells,R,C));const comp=composite();data=comp;prevComp=comp.map(r=>r.slice());return}
+ if(window.__clearAll){window.__clearAll=false;layers.forEach(l=>{l.cells=grid(R,C);l.shapes=[]})}
+ if(layers[0].cells.length!==R||(layers[0].cells[0]||[]).length!==C){layers.forEach(l=>{l.cells=fitG(l.cells,R,C);l.shapes=[]});const comp=composite();data=comp;prevComp=comp.map(r=>r.slice());return}
  if(prevComp.length!==R||(prevComp[0]||[]).length!==C){prevComp=composite().map(r=>r.slice());const comp=composite();data=comp;return}
  const act=layers[activeIdx];let ch=false;
  for(let r=0;r<R;r++){const dr=data[r],pr=prevComp[r],ar=act.cells[r];for(let c=0;c<C;c++)if(dr[c]!==pr[c]){ar[c]=dr[c];ch=true}}
@@ -590,7 +595,7 @@ function reconcile(){
   const comp=composite();for(let r=0;r<R;r++)for(let c=0;c<C;c++)data[r][c]=comp[r][c];prevComp=comp;renderLayerList(true)}}
 function applyLayers(){const comp=composite();data=comp;prevComp=comp.map(r=>r.slice());renderLayerList();draw()}
 const _snap=snapshot;snapshot=function(){const s=_snap();s.layers=cloneL(layers);s.active=activeIdx;return s};
-const _rs=restoreState;restoreState=function(s){if(s.layers&&s.layers.length){layers=cloneL(s.layers);activeIdx=Math.min(s.active||0,layers.length-1)}else{layers=[{id:++layerSeq,name:'Livello 1',visible:true,cells:s.data.map(r=>r.slice())}];activeIdx=0}prevComp=s.data.map(r=>r.slice());_rs(s);renderLayerList()};
+const _rs=restoreState;restoreState=function(s){if(s.layers&&s.layers.length){layers=cloneL(s.layers);activeIdx=Math.min(s.active||0,layers.length-1)}else{layers=[{id:++layerSeq,name:'Livello 1',visible:true,shapes:[],cells:s.data.map(r=>r.slice())}];activeIdx=0}prevComp=s.data.map(r=>r.slice());_rs(s);renderLayerList()};
 const _rd=resetData;resetData=function(){remember();window.__clearAll=true;_rd()};
 const dLay=mkDetails('Livelli','<div id="lList"></div><div class="lacts"><button class="btn primary" id="lAdd" title="Nuovo livello sopra quello attivo">＋ Nuovo</button><button class="btn" id="lRen" title="Rinomina">✎</button><button class="btn" id="lUp" title="Sposta su">▲</button><button class="btn" id="lDn" title="Sposta giù">▼</button><button class="btn" id="lDup" title="Duplica">⧉</button><button class="btn" id="lMerge" title="Unisci con il livello sotto">⤓ Unisci</button><button class="btn" id="lDel" title="Elimina">🗑</button></div><div class="small" style="margin-top:8px">Si disegna sul livello attivo (evidenziato). Le celle vuote lasciano vedere i livelli sotto. Con “Svuota” si cancellano tutti i livelli.</div>');
 panelEl.insertBefore(dLay,panelEl.children[1]||null);
@@ -603,16 +608,16 @@ function renderLayerList(light){
  else{[...L.children].forEach((row,i)=>{const k=layers.length-1-i,l=layers[k];row.className='lrow'+(k===activeIdx?' act':'');row.children[1].innerHTML=(k===activeIdx?'● ':'')+l.name.replace(/</g,'&lt;')+' <small style="opacity:.6">('+cnt(l)+')</small>'})}
  const lb=$('lyrBtn');if(lb)lb.textContent='🗂 '+layers[activeIdx].name.slice(0,9)}
 const op=fn=>{remember();fn();applyLayers()};
-$('lAdd').onclick=()=>op(()=>{const R=data.length,C=data[0].length;layers.splice(activeIdx+1,0,{id:++layerSeq,name:'Livello '+(layerSeq),visible:true,cells:grid(R,C)});activeIdx++});
+$('lAdd').onclick=()=>op(()=>{const R=data.length,C=data[0].length;layers.splice(activeIdx+1,0,{id:++layerSeq,name:'Livello '+(layerSeq),visible:true,shapes:[],cells:grid(R,C)});activeIdx++});
 $('lRen').onclick=()=>{const n=prompt('Nome del livello',layers[activeIdx].name);if(n===null)return;const t=n.trim().slice(0,30);if(!t)return;op(()=>{layers[activeIdx].name=t})};
 $('lUp').onclick=()=>{if(activeIdx>=layers.length-1)return;op(()=>{[layers[activeIdx],layers[activeIdx+1]]=[layers[activeIdx+1],layers[activeIdx]];activeIdx++})};
 $('lDn').onclick=()=>{if(activeIdx<=0)return;op(()=>{[layers[activeIdx],layers[activeIdx-1]]=[layers[activeIdx-1],layers[activeIdx]];activeIdx--})};
-$('lDup').onclick=()=>op(()=>{const L=layers[activeIdx];layers.splice(activeIdx+1,0,{id:++layerSeq,name:(L.name+' copia').slice(0,30),visible:true,cells:L.cells.map(r=>r.slice())});activeIdx++});
+$('lDup').onclick=()=>op(()=>{const L=layers[activeIdx];layers.splice(activeIdx+1,0,{id:++layerSeq,name:(L.name+' copia').slice(0,30),visible:true,shapes:(L.shapes||[]).slice(),cells:L.cells.map(r=>r.slice())});activeIdx++});
 $('lMerge').onclick=()=>{if(activeIdx<=0){toast('Non c’è un livello sotto.');return}op(()=>{const up=layers[activeIdx],lo=layers[activeIdx-1];up.cells.forEach((row,r)=>row.forEach((v,c)=>{if(v>0)lo.cells[r][c]=v}));lo.visible=lo.visible||up.visible;layers.splice(activeIdx,1);activeIdx--})};
 $('lDel').onclick=()=>{if(layers.length<2){toast('Serve almeno un livello.');return}if(!confirm('Eliminare il livello “'+layers[activeIdx].name+'”?'))return;op(()=>{layers.splice(activeIdx,1);activeIdx=Math.max(0,activeIdx-1)})};
 window.__layersIn=o=>{const R=o.rows,C=o.cols;let L=null;
- if(Array.isArray(o.layers)&&o.layers.length&&o.layers.every(l=>l&&Array.isArray(l.cells)&&l.cells.length===R&&l.cells.every(r=>Array.isArray(r)&&r.length===C&&r.every(v=>Number.isInteger(v)&&v>=0&&v<colors.length)))){L=o.layers.map((l,i)=>({id:++layerSeq,name:String(l.name||('Livello '+(i+1))).slice(0,30),visible:l.visible!==false,cells:l.cells.map(r=>r.slice())}));activeIdx=Math.min(L.length-1,Math.max(0,Number.isInteger(o.activeLayer)?o.activeLayer:L.length-1))}
- if(!L){L=[{id:++layerSeq,name:'Livello 1',visible:true,cells:o.data.map(r=>r.slice())}];activeIdx=0}
+ if(Array.isArray(o.layers)&&o.layers.length&&o.layers.every(l=>l&&Array.isArray(l.cells)&&l.cells.length===R&&l.cells.every(r=>Array.isArray(r)&&r.length===C&&r.every(v=>Number.isInteger(v)&&v>=0&&v<colors.length)))){L=o.layers.map((l,i)=>({id:++layerSeq,name:String(l.name||('Livello '+(i+1))).slice(0,30),visible:l.visible!==false,shapes:Array.isArray(l.shapes)?l.shapes.filter(q=>q&&Array.isArray(q.cells)&&Array.isArray(q.under)&&Number.isInteger(q.color)&&q.color<colors.length&&q.cells.length<20000):[],cells:l.cells.map(r=>r.slice())}));activeIdx=Math.min(L.length-1,Math.max(0,Number.isInteger(o.activeLayer)?o.activeLayer:L.length-1))}
+ if(!L){L=[{id:++layerSeq,name:'Livello 1',visible:true,shapes:[],cells:o.data.map(r=>r.slice())}];activeIdx=0}
  layers=L;const comp=composite();data=comp;prevComp=comp.map(r=>r.slice());renderLayerList()};
 
 /* ---------- PALETTE PERSONALIZZATA ---------- */
@@ -654,9 +659,9 @@ window.__customIn=o=>{if(!Array.isArray(o.customColors))return;const map={};
  o.customColors.forEach((fc,i)=>{if(!Array.isArray(fc)||typeof fc[0]!=='string'||!hexOk(fc[1]))return;let idx=-1;for(let j=baseLen;j<colors.length;j++){const c=colors[j];if(c[1]&&c[1].toLowerCase()===fc[1].toLowerCase()&&c[0]===fc[0]){idx=j;break}}if(idx<0){const nm=uniqueName(fc[0],-1);colors.push(fc[2]?[nm,fc[1],1]:[nm,fc[1]]);idx=colors.length-1}map[baseLen+i]=idx});
  const rm=v=>v>=baseLen?(map[v]!==undefined?map[v]:0):v;
  if(Array.isArray(o.data))o.data=o.data.map(r=>Array.isArray(r)?r.map(rm):r);
- if(Array.isArray(o.layers))o.layers.forEach(l=>{if(l&&Array.isArray(l.cells))l.cells=l.cells.map(r=>Array.isArray(r)?r.map(rm):r)});
+ if(Array.isArray(o.layers))o.layers.forEach(l=>{if(l&&Array.isArray(l.cells))l.cells=l.cells.map(r=>Array.isArray(r)?r.map(rm):r);if(l&&Array.isArray(l.shapes))l.shapes.forEach(q=>{if(q&&Number.isInteger(q.color)){q.color=rm(q.color);if(Array.isArray(q.under))q.under=q.under.map(u=>Array.isArray(u)?[u[0],u[1],rm(u[2])]:u)}})});
  saveCustom();window.__syncPL&&window.__syncPL();makePalette($('searchColor').value||'');renderCustomList()};
-window.__extraSave=()=>({layers:layers.map(l=>({name:l.name,visible:l.visible,cells:l.cells})),activeLayer:activeIdx,customColors:colors.slice(baseLen)});
+window.__activeLayer=()=>layers[activeIdx];window.__extraSave=()=>({layers:layers.map(l=>({name:l.name,visible:l.visible,cells:l.cells,shapes:l.shapes||[]})),activeLayer:activeIdx,customColors:colors.slice(baseLen)});
 const imgBox=$('imgDither')&&$('imgDither').parentElement;if(imgBox)imgBox.insertAdjacentHTML('afterend','<div class="inlinecheck"><input id="imgOnlyMine" type="checkbox"><label for="imgOnlyMine">Usa solo i miei colori (palette personalizzata)</label></div>');
 if($('imgOnlyMine'))$('imgOnlyMine').addEventListener('change',()=>$('imgDither').dispatchEvent(new Event('change')));
 window.__syncPL&&window.__syncPL();makePalette('');renderCustomList();
@@ -819,20 +824,26 @@ new MutationObserver(()=>{if(document.querySelector('.panel').classList.contains
 /* ---------- oggetti-forma ---------- */
 let obj=null,om=null;
 const rows_=()=>viewRows(),cols_=()=>viewCols();
-function objCells(o){const w=o.w,h=o.h,p=((o.R0%2)+2)%2;
- let L=window.__shapeCells({vr:p,vc:1},{vr:p+h-1,vc:w},o.type,o.fill).map(([r,c])=>[r-p,c-1]),ww=w,hh=h;
- for(let k=0;k<o.rot;k++){L=L.map(([r,c])=>[c,hh-1-r]);[ww,hh]=[hh,ww]}
- if(o.fm)L=L.map(([r,c])=>[r,ww-1-c]);
- if(o.fv)L=L.map(([r,c])=>[hh-1-r,c]);
- return L.map(([r,c])=>[o.R0+r,o.C0+c])}
+function objCells(o){const a={vr:o.R0,vc:o.C0},b={vr:o.R0+o.h-1,vc:o.C0+o.w-1};
+ if(o.type==='line'){const anti=((!!o.fm)!==(!!o.fv))!==(o.rot%2===1);return anti?window.__shapeCells({vr:a.vr,vc:b.vc},{vr:b.vr,vc:a.vc},'line',false):window.__shapeCells(a,b,'line',false)}
+ if(o.type==='rect')return window.__shapeCells(a,b,'rect',o.fill);
+ return shapeCellsX(a,b,o.type,o.fill,{rot:o.rot,fm:o.fm,fv:o.fv})}
 const bbox=cells=>{let r0=1e9,r1=-1e9,c0=1e9,c1=-1e9;cells.forEach(([r,c])=>{if(r<r0)r0=r;if(r>r1)r1=r;if(c<c0)c0=c;if(c>c1)c1=c});return {r0,r1,c0,c1}};
-function clampObj(o){const odd=o.rot%2,W=odd?o.h:o.w,H=odd?o.w:o.h;o.R0=Math.max(0,Math.min(rows_()-H,o.R0));o.C0=Math.max(0,Math.min(cols_()-W,o.C0))}
+function clampObj(o){o.w=Math.max(1,Math.min(cols_(),o.w));o.h=Math.max(1,Math.min(rows_(),o.h));o.R0=Math.max(0,Math.min(rows_()-o.h,o.R0));o.C0=Math.max(0,Math.min(cols_()-o.w,o.C0))}
 window.__makeObj=(sd,shapeType,shapeCellsFn)=>{window.__shapeCells=shapeCellsFn;commitObj();const a=sd.a,b=sd.b,o={type:shapeType,fill:$('shapeFill').checked,color:selected,R0:Math.min(a.vr,b.vr),C0:Math.min(a.vc,b.vc),w:Math.abs(a.vc-b.vc)+1,h:Math.abs(a.vr-b.vr)+1,rot:0,fm:false,fv:false,sel:selected};
- if(o.type==='tri'&&b.vr<a.vr)o.rot=2;
+ if(o.type==='tri'&&b.vr<a.vr)o.fv=true;
  if(o.type==='line'&&a.vc!==b.vc&&a.vr!==b.vr&&((a.vc<b.vc)!==(a.vr<b.vr)))o.fm=true;
  obj=o;draw()};
 const _rem=remember;
-function writeObj(o){_rem();objCells(o).forEach(([r,c])=>{if(r<0||c<0||r>=rows_()||c>=cols_())return;const d=dataCoord(r,c);data[d.r][d.c]=o.color})}
+function writeObj(o){_rem();const L=window.__activeLayer(),cells=objCells(o).filter(([r,c])=>r>=0&&c>=0&&r<rows_()&&c<cols_());
+ const under=cells.map(([r,c])=>[r,c,L.cells[r][c]]);
+ cells.forEach(([r,c])=>{const d=dataCoord(r,c);data[d.r][d.c]=o.color});
+ const rec=Object.assign({},o,{cells:cells.map(x=>x.slice()),under});delete rec.sel;(L.shapes=L.shapes||[]).push(rec)}
+function liftShape(i,p){const L=window.__activeLayer(),q=L.shapes[i];_rem();L.shapes.splice(i,1);
+ q.under.forEach(([r,c,v])=>{if(L.cells[r]&&L.cells[r][c]===q.color){const d=dataCoord(r,c);data[d.r][d.c]=v}});
+ const o=Object.assign({},q);delete o.cells;delete o.under;o.sel=selected;obj=o;$('shapeFill').checked=!!o.fill;om={mode:'mv',dr:p.vr-o.R0,dc:p.vc-o.C0};draw()}
+function pickShape(p){const L=window.__activeLayer(),list=L&&L.shapes;if(!list||!list.length)return -1;const tol=Math.max(1,Math.ceil(18/cell));let best=-1,bd=1e9;
+ list.forEach((q,i)=>{for(const [r,c] of q.cells){const d=Math.max(Math.abs(r-p.vr),Math.abs(c-p.vc));if(d<=bd){bd=d;best=i}}});return bd<=tol?best:-1}
 remember=function(){if(obj){const o=obj;obj=null;writeObj(o)}_rem()};
 function commitObj(){if(!obj)return;const o=obj;obj=null;writeObj(o);draw()}
 window.__commitObj=commitObj;window.__objInfo=()=>obj?{b:bbox(objCells(obj)),o:Object.assign({},obj)}:null;
@@ -841,8 +852,8 @@ window.__objOverlay=function(){if(!obj)return;const st=isStag(),cells=objCells(o
  const b=bbox(cells);if(b.r0>b.r1){ctx.restore();return}const x0=b.c0*cell,y0=b.r0*cell,x1=(b.c1+1)*cell+(st?cell/2:0),y1=(b.r1+1)*cell;
  ctx.globalAlpha=1;ctx.setLineDash([5,4]);ctx.strokeStyle='#7952a5';ctx.lineWidth=2;ctx.strokeRect(x0,y0,x1-x0,y1-y0);ctx.setLineDash([]);
  const hr=Math.max(9,cell*.9);ctx.fillStyle='#fff';ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(x1,y1,hr,hr/KY(),0,0,7);ctx.fill();ctx.stroke();ctx.restore()};
-const act={rot(){const b=bbox(objCells(obj)),cr=(b.r0+b.r1)/2,cc=(b.c0+b.c1)/2;obj.rot=(obj.rot+1)%4;const b2=bbox(objCells(obj));obj.R0+=Math.round(cr-(b2.r0+b2.r1)/2);obj.C0+=Math.round(cc-(b2.c0+b2.c1)/2);clampObj(obj);draw()},
- mir(){obj.fm=!obj.fm;draw()},flip(){obj.fv=!obj.fv;draw()},
+const act={rotOld(){const b=bbox(objCells(obj)),cr=(b.r0+b.r1)/2,cc=(b.c0+b.c1)/2;obj.rot=(obj.rot+1)%4;const b2=bbox(objCells(obj));obj.R0+=Math.round(cr-(b2.r0+b2.r1)/2);obj.C0+=Math.round(cc-(b2.c0+b2.c1)/2);clampObj(obj);draw()},
+ rot(){const cr=obj.R0+(obj.h-1)/2,cc=obj.C0+(obj.w-1)/2;[obj.w,obj.h]=[obj.h,obj.w];obj.rot=(obj.rot+1)%4;obj.R0=Math.round(cr-(obj.h-1)/2);obj.C0=Math.round(cc-(obj.w-1)/2);clampObj(obj);draw()},mir(){obj.fm=!obj.fm;draw()},flip(){obj.fv=!obj.fv;draw()},
  dup(){const o=obj;commitObj();obj=Object.assign({},o,{R0:o.R0+2,C0:o.C0+2});clampObj(obj);draw()},
  del(){obj=null;draw()}};
 $('shapeFill').addEventListener('change',()=>{if(obj){obj.fill=$('shapeFill').checked;draw()}});
@@ -860,6 +871,7 @@ addEventListener('pointerdown',e=>{
  if(e.target!==canvas||e.button!==0||pan)return;
  if(tool==='paste'&&pastePreview&&e.pointerType!=='mouse'){const p=viewAt(e),m=pastePreview.matrix,h=m.length,w=(m[0]||[]).length,ins=p.vr>=pastePreview.y&&p.vr<pastePreview.y+h&&p.vc>=pastePreview.x&&p.vc<pastePreview.x+w;
   pm=ins?{dx:p.vc-pastePreview.x,dy:p.vr-pastePreview.y}:{dx:w>>1,dy:h>>1};clampPaste(p.vc-pm.dx,p.vr-pm.dy);draw();e.stopPropagation();e.preventDefault();try{canvas.setPointerCapture(e.pointerId)}catch(_){}return}
+ if(tool==='shape'&&!obj){const p=viewAt(e),i=pickShape(p);if(i>=0){liftShape(i,p);e.stopPropagation();e.preventDefault();try{canvas.setPointerCapture(e.pointerId)}catch(_){}return}}
  if(obj&&tool==='shape'){const p=viewAt(e),b=bbox(objCells(obj)),tc=Math.max(1,Math.ceil(26/cell)),tr=Math.max(1,Math.ceil(26/(cell*KY())));
   if(Math.abs(p.vc-b.c1)<=tc&&Math.abs(p.vr-b.r1)<=tr)om={mode:'rs'};
   else if(p.vr>=b.r0&&p.vr<=b.r1&&p.vc>=b.c0&&p.vc<=b.c1)om={mode:'mv',dr:p.vr-obj.R0,dc:p.vc-obj.C0};
@@ -868,7 +880,7 @@ addEventListener('pointerdown',e=>{
 },true);
 addEventListener('pointermove',e=>{
  if(pm&&pastePreview){const p=viewAt(e);clampPaste(p.vc-pm.dx,p.vr-pm.dy);draw();return}
- if(om&&obj){const p=viewAt(e);if(om.mode==='mv'){obj.R0=p.vr-om.dr;obj.C0=p.vc-om.dc}else{const W=Math.max(1,p.vc-obj.C0+1),H=Math.max(1,p.vr-obj.R0+1),odd=obj.rot%2;obj.w=Math.min(cols_(),odd?H:W);obj.h=Math.min(rows_(),odd?W:H)}clampObj(obj);draw()}});
+ if(om&&obj){const p=viewAt(e);if(om.mode==='mv'){obj.R0=p.vr-om.dr;obj.C0=p.vc-om.dc}else{obj.w=Math.max(1,p.vc-obj.C0+1);obj.h=Math.max(1,p.vr-obj.R0+1)}clampObj(obj);draw()}});
 ['pointerup','pointercancel'].forEach(t=>addEventListener(t,()=>{pm=null;om=null}));
 /* ---------- lo schema segue il dito ai bordi ---------- */
 const down=new Map();let last=null,raf=0;
