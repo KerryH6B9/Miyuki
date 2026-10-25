@@ -867,15 +867,21 @@ const _rem=remember;
 function writeObj(o){_rem();const L=window.__activeLayer(),cells=objCells(o).filter(([r,c])=>r>=0&&c>=0&&r<rows_()&&c<cols_());
  const under=cells.map(([r,c])=>[r,c,L.cells[r][c]]);
  cells.forEach(([r,c,v])=>{const d=dataCoord(r,c);data[d.r][d.c]=v!=null?v:o.color});
- const rec=Object.assign({},o,{cells:cells.map(x=>x.slice()),under});delete rec.sel;(L.shapes=L.shapes||[]).push(rec)}
+ const rec=Object.assign({},o,{cells:cells.map(x=>x.slice()),under});delete rec.sel;delete rec.from;(L.shapes=L.shapes||[]).push(rec)}
 function liftShape(i,p){const L=window.__activeLayer(),q=L.shapes[i];_rem();L.shapes.splice(i,1);
  q.under.forEach(([r,c,v],i)=>{const want=(q.cells[i]&&q.cells[i][2]!=null)?q.cells[i][2]:q.color;if(L.cells[r]&&L.cells[r][c]===want){const d=dataCoord(r,c);data[d.r][d.c]=v}});
  const o=Object.assign({},q);delete o.cells;delete o.under;o.sel=selected;obj=o;$('shapeFill').checked=!!o.fill;om={mode:'mv',dr:p.vr-o.R0,dc:p.vc-o.C0};draw()}
-function pickShape(p){const L=window.__activeLayer(),list=L&&L.shapes;if(!list||!list.length)return -1;const tol=Math.max(1,Math.ceil(18/cell));let best=-1,bd=1e9;
+function pickShape(p){const L=window.__activeLayer(),list=L&&L.shapes;if(!list||!list.length)return -1;const tol=arguments[1]??Math.max(1,Math.ceil(18/cell));let best=-1,bd=1e9;
  list.forEach((q,i)=>{for(const [r,c] of q.cells){const d=Math.max(Math.abs(r-p.vr),Math.abs(c-p.vc));if(d<=bd){bd=d;best=i}}});return bd<=tol?best:-1}
 remember=function(){if(obj){const o=obj;obj=null;writeObj(o)}_rem()};
-function commitObj(){if(!obj)return;const o=obj;obj=null;writeObj(o);if(o.type==='img'&&tool==='shape'){tool='paint';setToolButtons()}draw()}
+function commitObj(){if(!obj)return;const o=obj;obj=null;writeObj(o);const back=o.from||(o.type==='img'?'paint':null);if(back&&tool==='shape'){tool=back;setToolButtons()}if(o.type==='img'&&!o.from)toast('Per spostarla ancora: strumento Seleziona e tocca l’immagine.');draw()}
 window.__commitObj=commitObj;
+/* ---------- v26: con Seleziona, un tocco su forma/immagine la riprende ---------- */
+let selTap=null;
+addEventListener('pointerdown',e=>{selTap=(tool==='select'&&!obj&&e.target===canvas&&(e.button===0||e.button===undefined))?{x:e.clientX,y:e.clientY,t:Date.now(),p:viewAt(e)}:null},true);
+addEventListener('pointerup',e=>{const s=selTap;selTap=null;if(!s||tool!=='select'||obj)return;if(Math.hypot(e.clientX-s.x,e.clientY-s.y)>10||Date.now()-s.t>700)return;const i=pickShape(s.p,0);if(i<0)return;
+ selection=null;liftShape(i,s.p);om=null;obj.from='select';tool='shape';setToolButtons();draw();toast('Selezionato: trascinalo, ridimensionalo o ruotalo, poi Conferma.')},true);
+
 /* ---------- v25: immagini come oggetti ---------- */
 const SRC=new Map(),IMC=new Map();
 function nearestM(m,w,h){const H=m.length,W=m[0].length;return Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>m[Math.min(H-1,Math.floor((y+.5)*H/h))][Math.min(W-1,Math.floor((x+.5)*W/w))]))}
