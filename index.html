@@ -367,7 +367,20 @@ const ratio=()=>{if(!loadedImage)return 1;const s=getSource();return (s.naturalH
 $('imgW').addEventListener('input',()=>{if($('imgRatio').checked&&loadedImage)$('imgH').value=Math.max(1,Math.min(80,Math.round($('imgW').value*ratio())));sched()});
 $('imgH').addEventListener('input',()=>{if($('imgRatio').checked&&loadedImage)$('imgW').value=Math.max(1,Math.min(160,Math.round($('imgH').value/ratio())));sched()});
 ['imgColors','transparentBg','imgDither','imgBr','imgCt','imgSa','imgRatio','stitch'].forEach(id=>{$(id).addEventListener('input',sched);$(id).addEventListener('change',sched)});
-function loadFile(f){if(!f||!/^image\//.test(f.type)){toast('Il file non è un’immagine.');return}const im=new Image();im.onload=()=>{loadedImage=im;if($('imgRot')){$('imgRot').value=0;$('rotVal').textContent='0°'}const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,pa=pixAspect();let w=Math.min(viewCols(),160),h=w*pa*ih/iw;if(h>Math.min(viewRows(),80)){h=Math.min(viewRows(),80);w=h/(pa*ih/iw)}$('imgW').value=Math.max(1,Math.round(w));$('imgH').value=Math.max(1,Math.round(h));$('placeImage').disabled=false;dI.open=true;preview();toast('Immagine caricata.')};im.onerror=()=>toast('Impossibile leggere l’immagine.');im.src=URL.createObjectURL(f)}
+async function normImage(f){
+ /* iPhone: le foto sono enormi (12-48 MP) e Safari a volte le disegna vuote. Le riduciamo subito a max 1200 px su una tela piccola. */
+ const MAX=1200;let src=null,iw=0,ih=0,url=null;
+ const blank=c=>{try{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<d.length;i+=4*Math.max(1,Math.floor(d.length/4/4000)))if(d[i]>0)return false;return true}catch(e){return false}};
+ const shrink=(img,w0,h0)=>{let w=w0,h=h0,cur=img;
+  while(Math.max(w,h)>MAX*2){const nw=Math.max(1,Math.round(w/2)),nh=Math.max(1,Math.round(h/2)),t=document.createElement('canvas');t.width=nw;t.height=nh;const g=t.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(cur,0,0,w,h,0,0,nw,nh);cur=t;w=nw;h=nh}
+  const k=Math.min(1,MAX/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(cur,0,0,w,h,0,0,c.width,c.height);return c};
+ try{if(window.createImageBitmap){const bm=await createImageBitmap(f);src=bm;iw=bm.width;ih=bm.height}}catch(e){src=null}
+ let c=src?shrink(src,iw,ih):null;
+ if(!c||blank(c)){url=URL.createObjectURL(f);const im=new Image();im.src=url;try{await im.decode()}catch(e){await new Promise((ok,ko)=>{if(im.complete&&im.naturalWidth)ok();else{im.onload=ok;im.onerror=ko}})}
+  c=shrink(im,im.naturalWidth||im.width,im.naturalHeight||im.height)}
+ if(url)setTimeout(()=>URL.revokeObjectURL(url),2000);try{src&&src.close&&src.close()}catch(e){}
+ if(blank(c))throw new Error('vuota');c.src='img'+Date.now();c.naturalWidth=c.width;c.naturalHeight=c.height;return c}
+function loadFile(f){if(!f||!(/^image\//.test(f.type)||(!f.type&&/\.(jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(f.name||'')))){toast('Il file non è un’immagine.');return}toast('Carico l’immagine…');normImage(f).then(im=>{loadedImage=im;if($('imgRot')){$('imgRot').value=0;$('rotVal').textContent='0°'}const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,pa=pixAspect();let w=Math.min(viewCols(),160),h=w*pa*ih/iw;if(h>Math.min(viewRows(),80)){h=Math.min(viewRows(),80);w=h/(pa*ih/iw)}$('imgW').value=Math.max(1,Math.round(w));$('imgH').value=Math.max(1,Math.round(h));$('placeImage').disabled=false;dI.open=true;preview();toast('Immagine caricata.')}).catch(()=>toast('Non riesco a leggere questa immagine. Prova a fare uno screenshot della foto e caricare quello.'))}
 $('imageFile').onchange=e=>{loadFile(e.target.files[0])};
 const box=canvas.parentElement;box.addEventListener('dragover',e=>e.preventDefault());box.addEventListener('drop',e=>{e.preventDefault();loadFile(e.dataTransfer.files[0])});
 $('placeImage').onclick=()=>{if(!loadedImage)return;const r=convert();imageMatrix=r.matrix;imageInfo=isStag()?{mirrorH:false,rowPar:r.matrix.map((_,i)=>i%2)}:null;imageAnchor={x:0,y:0};tool='image';setToolButtons();$('imageStatus').textContent='Sposta il mouse sulla griglia e clicca per inserire l’immagine.';draw()};
