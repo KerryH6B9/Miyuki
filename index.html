@@ -345,20 +345,21 @@ const PL=[];window.__syncPL=()=>{PL.length=0;colors.forEach(c=>PL.push(c[1]?lab(
 function lab(r,g,b){const f=v=>{v/=255;return v>.04045?((v+.055)/1.055)**2.4:v/12.92},R=f(r),G=f(g),B=f(b),t=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;const x=t((R*.4124+G*.3576+B*.1805)/.95047),y=t(R*.2126+G*.7152+B*.0722),z=t((R*.0193+G*.1192+B*.9505)/1.08883);return [116*y-16,500*(x-y),200*(y-z)]}
 const d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;
 function near(L,set){let b=set[0],bd=1e18;for(const i of set){const d=d2(L,PL[i]);if(d<bd){bd=d;b=i}}return b}
-function convert(){const img=getSource();if(!img)return null;const w=Math.max(1,Math.min(160,+$('imgW').value||1)),h=Math.max(1,Math.min(80,+$('imgH').value||1)),N=+$('imgColors').value,stag=isStag();
+function convert(o){o=o||{};const img=o.img||getSource();if(!img)return null;const w=Math.max(1,Math.min(160,o.w||+$('imgW').value||1)),h=Math.max(1,Math.min(80,o.h||+$('imgH').value||1)),N=o.N||+$('imgColors').value,stag=isStag(),par=o.par||0;
  const t=document.createElement('canvas');t.width=w;t.height=h;const g=t.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';
- if(!stag)g.drawImage(img,0,0,w,h);else for(let y=0;y<h;y++){g.save();g.beginPath();g.rect(0,y,w,1);g.clip();g.drawImage(img,y%2?-.5:0,0,w,h);g.restore()}
- const id=g.getImageData(0,0,w,h).data,br=+$('imgBr').value*2.55,ct=1+$('imgCt').value/100,sa=1+$('imgSa').value/100,ign=$('transparentBg').checked,px=[];
+ if(!stag)g.drawImage(img,0,0,w,h);else for(let y=0;y<h;y++){g.save();g.beginPath();g.rect(0,y,w,1);g.clip();g.drawImage(img,(y+par)%2?-.5:0,0,w,h);g.restore()}
+ const id=g.getImageData(0,0,w,h).data,br=+(o.br??$('imgBr').value)*2.55,ct=1+(o.ct??$('imgCt').value)/100,sa=1+(o.sa??$('imgSa').value)/100,ign=o.ign??$('transparentBg').checked,px=[];
  for(let i=0;i<id.length;i+=4){let r=id[i],gg=id[i+1],b=id[i+2];if(id[i+3]<40||(ign&&r>238&&gg>238&&b>238)){px.push(null);continue}
   r=(r-128)*ct+128+br;gg=(gg-128)*ct+128+br;b=(b-128)*ct+128+br;const y=.299*r+.587*gg+.114*b;r=y+(r-y)*sa;gg=y+(gg-y)*sa;b=y+(b-y)*sa;px.push([r,gg,b].map(v=>Math.max(0,Math.min(255,v))))}
  const all=(window.__colorSet?window.__colorSet():[]);if(!all.length)for(let i=1;i<colors.length;i++)if(!colors[i][2])all.push(i);const cnt={};
  px.forEach(q=>{if(q){const k=near(lab(...q),all);cnt[k]=(cnt[k]||0)+1}});
  let keep=Object.keys(cnt).map(Number);
  while(keep.length>N){let bi=0,bc=1e18;keep.forEach((k,i)=>{let md=1e18,mk=k;keep.forEach(o=>{if(o!==k){const d=d2(PL[k],PL[o]);if(d<md){md=d;mk=o}}});const c=cnt[k]*Math.sqrt(md);if(c<bc){bc=c;bi=i;}});const k=keep[bi];let md=1e18,mk=keep[0];keep.forEach(o=>{if(o!==k){const d=d2(PL[k],PL[o]);if(d<md){md=d;mk=o}}});cnt[mk]+=cnt[k];keep.splice(bi,1)}
- const out=Array.from({length:h},()=>Array(w).fill(null)),used=new Set(),dith=$('imgDither').checked,err=px.map(()=>[0,0,0]);
+ const out=Array.from({length:h},()=>Array(w).fill(null)),used=new Set(),dith=o.dith??$('imgDither').checked,err=px.map(()=>[0,0,0]);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,q=px[i];if(!q||!keep.length)continue;const a=q.map((v,c)=>Math.max(0,Math.min(255,v+(dith?err[i][c]:0)))),k=near(lab(...a),keep);out[y][x]=k;used.add(k);
   if(dith){const pr=rgb(colors[k][1]),e=a.map((v,c)=>v-pr[c]);[[1,0,7/16],[-1,1,3/16],[0,1,5/16],[1,1,1/16]].forEach(([dx,dy,wt])=>{const nx=x+dx,ny=y+dy;if(nx<0||nx>=w||ny>=h)return;const j=ny*w+nx;if(px[j])for(let c=0;c<3;c++)err[j][c]+=e[c]*wt})}}
  return {matrix:out,used,w,h}}
+window.__imgConvert=convert;window.__imgOpts=()=>({img:getSource(),N:+$('imgColors').value,br:+$('imgBr').value,ct:+$('imgCt').value,sa:+$('imgSa').value,ign:$('transparentBg').checked,dith:$('imgDither').checked});
 function preview(){const c=$('imgPrev'),r=convert();if(!r){c.width=c.height=0;return}const pc=Math.max(2,Math.min(8,Math.floor(260/(r.w+.5)))),x=c.getContext('2d'),pe=isStag();c.width=Math.round((r.w+(pe?.5:0))*pc);const ch=pc/pixAspect();c.height=Math.round(r.h*ch);x.fillStyle='#2b2233';x.fillRect(0,0,c.width,c.height);
  r.matrix.forEach((row,y)=>row.forEach((k,xx)=>{if(!k)return;x.fillStyle=colors[k][1];bPath(x,(xx+(pe&&y%2?.5:0))*pc+pc/2,y*ch+ch/2,pc,ch);x.fill()}));
  $('imgInfo').textContent=r.w+' × '+r.h+' perline, '+r.used.size+' colori usati, '+r.matrix.flat().filter(Boolean).length+' perline in totale.'}
@@ -852,12 +853,12 @@ new MutationObserver(()=>{if(document.querySelector('.panel').classList.contains
 /* ---------- oggetti-forma ---------- */
 let obj=null,om=null;
 const rows_=()=>viewRows(),cols_=()=>viewCols();
-function objCells(o){const a={vr:o.R0,vc:o.C0},b={vr:o.R0+o.h-1,vc:o.C0+o.w-1};
+function objCells(o){if(o.type==='img')return imgCells(o);const a={vr:o.R0,vc:o.C0},b={vr:o.R0+o.h-1,vc:o.C0+o.w-1};
  if(o.type==='line'){const anti=((!!o.fm)!==(!!o.fv))!==(o.rot%2===1);return anti?window.__shapeCells({vr:a.vr,vc:b.vc},{vr:b.vr,vc:a.vc},'line',false):window.__shapeCells(a,b,'line',false)}
  if(o.type==='rect')return window.__shapeCells(a,b,'rect',o.fill);
  return shapeCellsX(a,b,o.type,o.fill,{rot:o.rot,fm:o.fm,fv:o.fv})}
 const bbox=cells=>{let r0=1e9,r1=-1e9,c0=1e9,c1=-1e9;cells.forEach(([r,c])=>{if(r<r0)r0=r;if(r>r1)r1=r;if(c<c0)c0=c;if(c>c1)c1=c});return {r0,r1,c0,c1}};
-function clampObj(o){o.w=Math.max(1,Math.min(cols_(),o.w));o.h=Math.max(1,Math.min(rows_(),o.h));{const mh=Math.min(2,o.h),mw=Math.min(2,o.w);o.R0=Math.max(mh-o.h,Math.min(rows_()-mh,o.R0));o.C0=Math.max(mw-o.w,Math.min(cols_()-mw,o.C0))}}
+function clampObj(o){if(o.type==='img'){const k=Math.min(1,cols_()/o.w,rows_()/o.h);if(k<1){o.w=Math.max(1,Math.floor(o.w*k));o.h=Math.max(1,Math.floor(o.h*k))}}o.w=Math.max(1,Math.min(cols_(),o.w));o.h=Math.max(1,Math.min(rows_(),o.h));{const mh=Math.min(2,o.h),mw=Math.min(2,o.w);o.R0=Math.max(mh-o.h,Math.min(rows_()-mh,o.R0));o.C0=Math.max(mw-o.w,Math.min(cols_()-mw,o.C0))}}
 window.__makeObj=(sd,shapeType,shapeCellsFn)=>{window.__shapeCells=shapeCellsFn;commitObj();const a=sd.a,b=sd.b,o={type:shapeType,fill:$('shapeFill').checked,color:selected,R0:Math.min(a.vr,b.vr),C0:Math.min(a.vc,b.vc),w:Math.abs(a.vc-b.vc)+1,h:Math.abs(a.vr-b.vr)+1,rot:0,fm:false,fv:false,sel:selected};
  if(o.type==='tri'&&b.vr<a.vr)o.fv=true;
  if(o.type==='line'&&a.vc!==b.vc&&a.vr!==b.vr&&((a.vc<b.vc)!==(a.vr<b.vr)))o.fm=true;
@@ -865,18 +866,37 @@ window.__makeObj=(sd,shapeType,shapeCellsFn)=>{window.__shapeCells=shapeCellsFn;
 const _rem=remember;
 function writeObj(o){_rem();const L=window.__activeLayer(),cells=objCells(o).filter(([r,c])=>r>=0&&c>=0&&r<rows_()&&c<cols_());
  const under=cells.map(([r,c])=>[r,c,L.cells[r][c]]);
- cells.forEach(([r,c])=>{const d=dataCoord(r,c);data[d.r][d.c]=o.color});
+ cells.forEach(([r,c,v])=>{const d=dataCoord(r,c);data[d.r][d.c]=v!=null?v:o.color});
  const rec=Object.assign({},o,{cells:cells.map(x=>x.slice()),under});delete rec.sel;(L.shapes=L.shapes||[]).push(rec)}
 function liftShape(i,p){const L=window.__activeLayer(),q=L.shapes[i];_rem();L.shapes.splice(i,1);
- q.under.forEach(([r,c,v])=>{if(L.cells[r]&&L.cells[r][c]===q.color){const d=dataCoord(r,c);data[d.r][d.c]=v}});
+ q.under.forEach(([r,c,v],i)=>{const want=(q.cells[i]&&q.cells[i][2]!=null)?q.cells[i][2]:q.color;if(L.cells[r]&&L.cells[r][c]===want){const d=dataCoord(r,c);data[d.r][d.c]=v}});
  const o=Object.assign({},q);delete o.cells;delete o.under;o.sel=selected;obj=o;$('shapeFill').checked=!!o.fill;om={mode:'mv',dr:p.vr-o.R0,dc:p.vc-o.C0};draw()}
 function pickShape(p){const L=window.__activeLayer(),list=L&&L.shapes;if(!list||!list.length)return -1;const tol=Math.max(1,Math.ceil(18/cell));let best=-1,bd=1e9;
  list.forEach((q,i)=>{for(const [r,c] of q.cells){const d=Math.max(Math.abs(r-p.vr),Math.abs(c-p.vc));if(d<=bd){bd=d;best=i}}});return bd<=tol?best:-1}
 remember=function(){if(obj){const o=obj;obj=null;writeObj(o)}_rem()};
-function commitObj(){if(!obj)return;const o=obj;obj=null;writeObj(o);draw()}
-window.__commitObj=commitObj;window.__objInfo=()=>obj?{b:bbox(objCells(obj)),o:Object.assign({},obj)}:null;
+function commitObj(){if(!obj)return;const o=obj;obj=null;writeObj(o);if(o.type==='img'&&tool==='shape'){tool='paint';setToolButtons()}draw()}
+window.__commitObj=commitObj;
+/* ---------- v25: immagini come oggetti ---------- */
+const SRC=new Map(),IMC=new Map();
+function nearestM(m,w,h){const H=m.length,W=m[0].length;return Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>m[Math.min(H-1,Math.floor((y+.5)*H/h))][Math.min(W-1,Math.floor((x+.5)*W/w))]))}
+function imgMat(o){const odd=o.rot%2===1,bw=odd?o.h:o.w,bh=odd?o.w:o.h,par=((o.R0%2)+2)%2,key=o.imgId+'|'+bw+'|'+bh+'|'+par;if(IMC.has(key))return IMC.get(key);
+ const same=bw===o.m0[0].length&&bh===o.m0.length,op=SRC.get(o.imgId);let m;
+ if(same&&(par===(o.p0||0)||!op||!isStag()))m=o.m0;else if(op){try{m=window.__imgConvert(Object.assign({},op,{w:bw,h:bh,par})).matrix}catch(e){m=null}}
+ if(!m)m=nearestM(o.m0,bw,bh);if(IMC.size>60)IMC.clear();IMC.set(key,m);return m}
+function imgCells(o){const m=imgMat(o),bh=m.length,bw=m[0].length,out=[];
+ for(let y=0;y<bh;y++)for(let x=0;x<bw;x++){const v=m[y][x];if(v==null||v<=0)continue;let X=x,Y=y,W=bw,H=bh;if(o.fm)X=bw-1-X;if(o.fv)Y=bh-1-Y;
+  for(let k=0;k<o.rot;k++){const nx=H-1-Y,ny=X;X=nx;Y=ny;const t=W;W=H;H=t}out.push([o.R0+Y,o.C0+X,v])}
+ return out}
+$('placeImage').onclick=()=>{if(!loadedImage)return;const op=window.__imgOpts();const r=window.__imgConvert(Object.assign({},op,{par:0}));if(!r)return;
+ commitObj();const id='im'+Date.now()+Math.random().toString(36).slice(2,6);SRC.set(id,op);
+ const bx=canvas.parentElement.getBoundingClientRect(),cx=(Math.max(bx.left,0)+Math.min(bx.right,innerWidth))/2,cy=(Math.max(bx.top,0)+Math.min(bx.bottom,innerHeight))/2;let p={vr:0,vc:0};try{p=viewAt({clientX:cx,clientY:cy})}catch(e){}
+ const o={type:'img',imgId:id,m0:r.matrix,p0:0,w:r.w,h:r.h,R0:Math.round(p.vr-(r.h-1)/2),C0:Math.round(p.vc-(r.w-1)/2),rot:0,fm:false,fv:false,fill:false,color:selected,sel:selected};
+ if(o.R0%2!==0&&isStag())o.R0--;clampObj(o);imageMatrix=null;imageAnchor=null;obj=o;tool='shape';setToolButtons();
+ $('imageStatus').textContent='Immagine inserita come oggetto: trascinala, ridimensionala dal pallino in basso a destra, ruotala o specchiala, poi premi Conferma. Per riprenderla in seguito: Forme e toccala.';
+ draw();toast('Sposta l’immagine e premi Conferma.')};
+window.__objInfo=()=>obj?{b:bbox(objCells(obj)),o:Object.assign({},obj)}:null;
 window.__objOverlay=function(){if(!obj)return;const st=isStag(),cells=objCells(obj);ctx.save();ctx.globalAlpha=.85;
- cells.forEach(([r,c])=>{if(r<0||c<0||r>=rows_()||c>=cols_())return;const off=st&&r%2?cell/2:0;bPath(ctx,c*cell+off+cell/2,r*cell+cell/2,cell,cell);ctx.fillStyle=colors[obj.color][1]||'#ddd';ctx.fill();ctx.strokeStyle='#7952a5';ctx.lineWidth=1;ctx.stroke()});
+ cells.forEach(([r,c,v])=>{if(r<0||c<0||r>=rows_()||c>=cols_())return;const off=st&&r%2?cell/2:0;bPath(ctx,c*cell+off+cell/2,r*cell+cell/2,cell,cell);ctx.fillStyle=colors[v!=null?v:obj.color][1]||'#ddd';ctx.fill();ctx.strokeStyle='#7952a5';ctx.lineWidth=1;ctx.stroke()});
  const b=bbox(cells);if(b.r0>b.r1){ctx.restore();return}const x0=b.c0*cell,y0=b.r0*cell,x1=(b.c1+1)*cell+(st?cell/2:0),y1=(b.r1+1)*cell;
  ctx.globalAlpha=1;ctx.setLineDash([5,4]);ctx.strokeStyle='#7952a5';ctx.lineWidth=2;ctx.strokeRect(x0,y0,x1-x0,y1-y0);ctx.setLineDash([]);
  const hr=Math.max(9,cell*.9);ctx.fillStyle='#fff';ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(x1,y1,hr,hr/KY(),0,0,7);ctx.fill();ctx.stroke();ctx.restore()};
@@ -903,12 +923,12 @@ addEventListener('pointerdown',e=>{
  if(obj&&tool==='shape'){const p=viewAt(e),b=bbox(objCells(obj)),tc=Math.max(1,Math.ceil(26/cell)),tr=Math.max(1,Math.ceil(26/(cell*KY())));
   if(Math.abs(p.vc-b.c1)<=tc&&Math.abs(p.vr-b.r1)<=tr)om={mode:'rs'};
   else if(p.vr>=b.r0&&p.vr<=b.r1&&p.vc>=b.c0&&p.vc<=b.c1)om={mode:'mv',dr:p.vr-obj.R0,dc:p.vc-obj.C0};
-  else{commitObj();return}
+  else{const wi=obj.type==='img';commitObj();if(wi){e.stopPropagation();e.preventDefault()}return}
   e.stopPropagation();e.preventDefault();try{canvas.setPointerCapture(e.pointerId)}catch(_){}}
 },true);
 addEventListener('pointermove',e=>{
  if(pm&&pastePreview){const p=viewAt(e);clampPaste(p.vc-pm.dx,p.vr-pm.dy);draw();return}
- if(om&&obj){const p=viewAt(e);if(om.mode==='mv'){obj.R0=p.vr-om.dr;obj.C0=p.vc-om.dc}else{obj.w=Math.max(1,p.vc-obj.C0+1);obj.h=Math.max(1,p.vr-obj.R0+1)}clampObj(obj);draw()}});
+ if(om&&obj){const p=viewAt(e);if(om.mode==='mv'){obj.R0=p.vr-om.dr;obj.C0=p.vc-om.dc}else{obj.w=Math.max(1,p.vc-obj.C0+1);obj.h=Math.max(1,p.vr-obj.R0+1);if(obj.type==='img'){const A=obj.m0.length/obj.m0[0].length;obj.h=Math.max(1,Math.round(obj.w*(obj.rot%2?1/A:A)))}}clampObj(obj);draw()}});
 ['pointerup','pointercancel'].forEach(t=>addEventListener(t,()=>{pm=null;om=null}));
 /* ---------- lo schema segue il dito ai bordi ---------- */
 const down=new Map();let last=null,raf=0;
